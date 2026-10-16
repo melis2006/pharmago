@@ -1,26 +1,18 @@
-# Speedy Pill Path
+# PharmaGO
 
-Implement exactly the screenshot and nothing else
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://speedy-pill-path.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/b741131f-4cd2-4081-b3e5-3f349b1bffe5).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+Responsive web app (mobile + desktop) for elderly users in Tashkent: search medicines,
+compare prices across pharmacies, and order delivery by drone or courier.
+University MVP — all data is demo data stored in the browser (localStorage).
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
+git clone https://github.com/melis2006/pharmago.git
+cd pharmago
 npm i
 npm run dev
 ```
+
+Other commands: `npm run build`, `npm test`, `npm run lint`.
