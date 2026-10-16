@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import medImg from "@/assets/medicine.jpg";
+import { MedicineImage } from "@/components/MedicineImage";
 import { PageTitle, Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { DELIVERY, formatSum, getMedicine, getPharmacy } from "@/lib/data";
@@ -27,19 +27,20 @@ function CartPage() {
           <Button asChild size="lg" className="mt-5"><Link to="/home">Find medicines</Link></Button>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-[1fr_360px]">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_360px]">
           <ul className="space-y-3">
             {cart.map((c) => {
               const m = getMedicine(c.medicineId)!;
               return (
-                <li key={c.key} className="card-soft flex items-center gap-4 p-4">
-                  <img src={medImg} alt="" className="h-20 w-20 shrink-0 rounded-xl object-cover" />
-                  <div className="min-w-0 flex-1">
+                // On phones the quantity buttons wrap to their own line so the name has room.
+                <li key={c.key} className="card-soft flex flex-wrap items-center gap-4 p-4">
+                  <MedicineImage m={m} size="thumb" decorative />
+                  <div className="min-w-0 flex-1 basis-40">
                     <p className="text-xl font-bold">{m.name}</p>
                     <p className="text-muted-foreground">{m.packs[c.pack]?.label} · {getPharmacy(c.pharmacyId)!.name}</p>
                     <p className="text-lg font-bold text-primary">{formatSum(c.unitPrice * c.qty)}</p>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2">
+                  <div className="ml-auto flex shrink-0 items-center gap-2">
                     <Button size="icon" variant="secondary" aria-label="Decrease" onClick={() => qty(c.key, -1)}>{c.qty === 1 ? <Trash2 /> : <Minus />}</Button>
                     <span className="w-8 text-center text-xl font-bold">{c.qty}</span>
                     <Button size="icon" variant="secondary" aria-label="Increase" onClick={() => qty(c.key, 1)}><Plus /></Button>

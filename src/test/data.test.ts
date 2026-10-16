@@ -33,4 +33,10 @@ describe("demo data", () => {
   it("formats prices in sum", () => {
     expect(formatSum(35000)).toBe("35,000 sum");
   });
+
+  it("gives every medicine without a photo its own box colour", () => {
+    const colours = MEDICINES.filter((m) => !m.image).map((m) => m.color.toLowerCase());
+    expect(colours.length).toBeGreaterThan(0);
+    expect(new Set(colours).size).toBe(colours.length);
+  });
 });

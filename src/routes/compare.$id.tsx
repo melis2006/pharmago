@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Clock, MapPin, Pencil, Plus, Truck } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { MedicineImage } from "@/components/MedicineImage";
 import { ContactButton, PharmacyLogo, StarRow } from "@/components/Pharmacy";
 import { PageTitle, Shell, soon } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
@@ -53,7 +54,10 @@ function Options() {
 
   return (
     <Shell>
-      <PageTitle sub={m.name}>Options</PageTitle>
+      <div className="flex items-center gap-4">
+        <MedicineImage m={m} size="thumb" className="mb-6" decorative />
+        <PageTitle sub={m.name}>Options</PageTitle>
+      </div>
       <div className="mb-4 inline-grid grid-cols-2 rounded-xl bg-secondary p-1">
         {(["list", "map"] as const).map((v) => (
           <button key={v} onClick={() => setView(v)} aria-pressed={view === v} className={`min-h-12 rounded-lg px-8 text-lg font-bold capitalize ${view === v ? "bg-card text-primary shadow" : ""}`}>{v}</button>

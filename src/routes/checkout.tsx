@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
+import { MedicineImage } from "@/components/MedicineImage";
 import { PageTitle, Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DELIVERY, formatSum } from "@/lib/data";
+import { DELIVERY, formatSum, getMedicine } from "@/lib/data";
 import { seo } from "@/lib/seo";
 import { useStore } from "@/lib/store";
 
@@ -101,6 +102,20 @@ function Checkout() {
           </Section>
         </div>
         <div className="card-soft h-fit space-y-3 p-5 text-lg md:sticky md:top-24">
+          {cart.length > 0 && (
+            <ul className="space-y-3 border-b pb-3" aria-label="Your items">
+              {cart.map((c) => {
+                const m = getMedicine(c.medicineId);
+                if (!m) return null;
+                return (
+                  <li key={c.key} className="flex items-center gap-3">
+                    <MedicineImage m={m} size="mini" decorative />
+                    <span className="min-w-0 flex-1 font-semibold leading-tight">{m.name}<span className="block text-base font-normal text-muted-foreground">{m.packs[c.pack]?.label} × {c.qty}</span></span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
           <div className="flex justify-between"><span>Subtotal</span><b>{formatSum(sub)}</b></div>
           <div className="flex justify-between"><span>Delivery ({DELIVERY[method].label})</span><b>{formatSum(DELIVERY[method].price)}</b></div>
           <div className="flex justify-between border-t pt-3 text-2xl font-bold"><span>Total</span><span>{formatSum(total)}</span></div>

@@ -2,13 +2,13 @@ import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-ro
 import { AlertTriangle, BookOpen, Candy, FlaskConical, MapPin, Package, Pill, Tablets, Zap } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import medImg from "@/assets/medicine.jpg";
 import { SaveButton } from "@/components/MedicineCard";
+import { MedicineImage } from "@/components/MedicineImage";
 import { ContactButton, PharmacyLogo, StarRow } from "@/components/Pharmacy";
 import { Shell, Stars } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CONDITIONS, formatSum, getMedicine, getPharmacy, type Medicine } from "@/lib/data";
+import { brandName, CONDITIONS, formatSum, getMedicine, getPharmacy } from "@/lib/data";
 import { addToCart, useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/medicine/$id")({
@@ -29,9 +29,6 @@ export const Route = createFileRoute("/medicine/$id")({
 });
 
 const FORM_ICON = { tablets: Tablets, capsules: Pill, lozenges: Candy, syrup: FlaskConical, sachets: Package } as const;
-
-// "Fanigan 200 mg" → "Fanigan"; the strength is shown as its own pill.
-const brandName = (m: Medicine) => (m.strength ? m.name.replace(m.strength, "").trim() : m.name);
 
 function MedicinePage() {
   const { m } = Route.useLoaderData();
@@ -76,7 +73,7 @@ function MedicinePage() {
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-start">
         <div>
           <div className="relative">
-            <img src={medImg} alt={m.name} width={816} height={816} className="aspect-square w-full rounded-3xl object-cover" />
+            <MedicineImage m={m} size="hero" />
             <div className="absolute right-3 top-3"><SaveButton id={m.id} /></div>
           </div>
         </div>

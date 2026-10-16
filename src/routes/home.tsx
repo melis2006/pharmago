@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Bot, HelpCircle, Phone, Siren } from "lucide-react";
 import { useState } from "react";
 import drone from "@/assets/drone.jpg";
+import promoBanner from "@/assets/products/promo-banner.jpg";
 import { MedicineCard } from "@/components/MedicineCard";
 import { SearchBar } from "@/components/SearchBar";
 import { Shell, soon } from "@/components/Shell";
@@ -30,10 +31,13 @@ function HomePage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
-        <div className="bg-hero flex min-h-44 flex-col justify-center rounded-3xl p-7 text-primary-foreground">
-          <p className="text-lg font-semibold opacity-90">Autumn offer</p>
-          <h2 className="text-3xl font-bold">Seasonal medicines 25% OFF</h2>
-          <Link to="/search" search={{ q: "cold" }} className="mt-3 w-fit rounded-xl bg-card px-5 py-2.5 text-lg font-bold text-primary">Shop now</Link>
+        <div className="bg-hero flex min-h-44 items-stretch gap-4 overflow-hidden rounded-3xl p-5 text-primary-foreground sm:p-7">
+          <div className="flex min-w-0 flex-1 flex-col justify-center">
+            <p className="text-lg font-semibold opacity-90">Autumn offer</p>
+            <h2 className="text-3xl font-bold">Seasonal medicines 25% OFF</h2>
+            <Link to="/search" search={{ q: "cold" }} className="mt-3 w-fit rounded-xl bg-card px-5 py-2.5 text-lg font-bold text-primary">Shop now</Link>
+          </div>
+          <img src={promoBanner} alt="" width={140} height={192} className="w-28 shrink-0 self-center rounded-2xl object-cover shadow-lg sm:w-32" />
         </div>
         <div className="relative min-h-44 overflow-hidden rounded-3xl">
           <img src={drone} alt="Delivery drone" width={1280} height={640} className="absolute inset-0 h-full w-full object-cover" />

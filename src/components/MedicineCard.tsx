@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Heart, MapPin } from "lucide-react";
 import { toast } from "sonner";
-import medImg from "@/assets/medicine.jpg";
+import { MedicineImage } from "@/components/MedicineImage";
 import { Button } from "@/components/ui/button";
 import { formatSum, getPharmacy, type Medicine } from "@/lib/data";
 import { addToCart, useStore } from "@/lib/store";
@@ -29,7 +29,7 @@ export function MedicineCard({ m, showMeta }: { m: Medicine; showMeta?: boolean 
     <div className="card-soft flex flex-col overflow-hidden">
       <div className="relative">
         <Link to="/medicine/$id" params={{ id: m.id }}>
-          <img src={medImg} alt={m.name} loading="lazy" width={816} height={816} className="aspect-[4/3] w-full object-cover" />
+          <MedicineImage m={m} />
         </Link>
         <div className="absolute right-2 top-2"><SaveButton id={m.id} /></div>
         {m.prescription && <span className="absolute left-2 top-2 rounded-lg bg-destructive px-2 py-1 text-sm font-bold text-destructive-foreground">Rx</span>}

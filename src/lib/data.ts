@@ -1,3 +1,13 @@
+import faniganImg from "@/assets/products/fanigan.png";
+import fanigolinImg from "@/assets/products/fanigolin.png";
+import fanibrufenImg from "@/assets/products/fanibrufen.png";
+import bronhoMunalImg from "@/assets/products/bronho-munal.png";
+import immunoaktivImg from "@/assets/products/immunoaktiv.png";
+import terafluImg from "@/assets/products/teraflu.png";
+import paracetamolImg from "@/assets/products/paracetamol.png";
+import ibuprofenImg from "@/assets/products/ibuprofen.png";
+import vitaminCImg from "@/assets/products/vitamin-c.png";
+
 export type Condition =
   | "diabetes"
   | "hypertension"
@@ -35,6 +45,8 @@ export const CATEGORIES = [
 export type Medicine = {
   id: string;
   name: string;
+  image?: string; // product photo; without one a generated box (MedicineBox) is shown
+  color: string; // stripe colour of the generated box
   strength?: string; // shown as a separate pill, e.g. "200 mg"
   drugClass: string;
   ingredients: string; // active ingredients
@@ -61,6 +73,8 @@ export const MEDICINES: Medicine[] = [
   {
     id: "fanigan",
     name: "Fanigan 200 mg",
+    image: faniganImg,
+    color: "#d62828",
     strength: "200 mg",
     drugClass: "NSAID",
     ingredients: "Diclofenac sodium + Paracetamol",
@@ -87,6 +101,8 @@ export const MEDICINES: Medicine[] = [
   {
     id: "fanigolin",
     name: "Fanigolin 200 mg",
+    image: fanigolinImg,
+    color: "#e76f51",
     strength: "200 mg",
     drugClass: "Throat antiseptic",
     ingredients: "Amylmetacresol + Dichlorobenzyl alcohol",
@@ -106,6 +122,8 @@ export const MEDICINES: Medicine[] = [
   {
     id: "fanibrufen",
     name: "Fanibrufen 300 ml",
+    image: fanibrufenImg,
+    color: "#9b5de5",
     strength: "300 ml",
     drugClass: "NSAID",
     ingredients: "Ibuprofen",
@@ -131,6 +149,8 @@ export const MEDICINES: Medicine[] = [
   {
     id: "bronho-munal",
     name: "Bronho-Munal 7 mg",
+    image: bronhoMunalImg,
+    color: "#0096c7",
     strength: "7 mg",
     drugClass: "Immunostimulant",
     ingredients: "Bacterial lysate",
@@ -150,6 +170,8 @@ export const MEDICINES: Medicine[] = [
   {
     id: "immunoaktiv",
     name: "ImmunoAktiv",
+    image: immunoaktivImg,
+    color: "#f4a261",
     drugClass: "Multivitamin",
     ingredients: "Vitamin C + Vitamin D3 + Zinc",
     category: "vitamins",
@@ -167,6 +189,8 @@ export const MEDICINES: Medicine[] = [
   {
     id: "paracetamol",
     name: "Paracetamol 500 mg",
+    image: paracetamolImg,
+    color: "#2a9d8f",
     strength: "500 mg",
     drugClass: "Analgesic",
     ingredients: "Paracetamol",
@@ -186,6 +210,8 @@ export const MEDICINES: Medicine[] = [
   {
     id: "teraflu",
     name: "Teraflu Lemon",
+    image: terafluImg,
+    color: "#e9c46a",
     drugClass: "Cold & flu remedy",
     ingredients: "Paracetamol + Pheniramine + Phenylephrine",
     category: "cold",
@@ -209,6 +235,8 @@ export const MEDICINES: Medicine[] = [
   {
     id: "ibuprofen",
     name: "Ibuprofen 400 mg",
+    image: ibuprofenImg,
+    color: "#c1121f",
     strength: "400 mg",
     drugClass: "NSAID",
     ingredients: "Ibuprofen",
@@ -231,6 +259,7 @@ export const MEDICINES: Medicine[] = [
   {
     id: "cetirizine",
     name: "Cetirizine 10 mg",
+    color: "#3a86ff",
     strength: "10 mg",
     drugClass: "Antihistamine",
     ingredients: "Cetirizine",
@@ -249,6 +278,7 @@ export const MEDICINES: Medicine[] = [
   {
     id: "amoxicillin",
     name: "Amoxicillin 500 mg",
+    color: "#2d6a4f",
     strength: "500 mg",
     drugClass: "Penicillin antibiotic",
     ingredients: "Amoxicillin",
@@ -267,6 +297,8 @@ export const MEDICINES: Medicine[] = [
   {
     id: "vitamin-c",
     name: "Vitamin C 1000 mg",
+    image: vitaminCImg,
+    color: "#f77f00",
     strength: "1000 mg",
     drugClass: "Vitamin",
     ingredients: "Ascorbic acid",
@@ -285,6 +317,7 @@ export const MEDICINES: Medicine[] = [
   {
     id: "omeprazole",
     name: "Omeprazole 20 mg",
+    color: "#7b2cbf",
     strength: "20 mg",
     drugClass: "Proton pump inhibitor",
     ingredients: "Omeprazole",
@@ -303,6 +336,7 @@ export const MEDICINES: Medicine[] = [
   {
     id: "aspirin-cardio",
     name: "Aspirin Cardio 100 mg",
+    color: "#e63946",
     strength: "100 mg",
     drugClass: "Antiplatelet",
     ingredients: "Acetylsalicylic acid",
@@ -457,3 +491,6 @@ export const DELIVERY = {
 } as const;
 
 export const deliveryLabel = (p: Pharmacy) => (p.freeDelivery ? "Free delivery" : `Delivery ${formatSum(p.deliveryPrice)}`);
+
+// "Fanigan 200 mg" → "Fanigan"; the strength is shown separately.
+export const brandName = (m: Medicine) => (m.strength ? m.name.replace(m.strength, "").trim() : m.name);
