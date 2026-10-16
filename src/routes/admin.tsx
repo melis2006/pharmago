@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Logo } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
-import { formatUZS, getMedicine, MEDICINES, PHARMACIES } from "@/lib/data";
+import { formatSum, getMedicine, PHARMACIES, type Offer } from "@/lib/data";
 import { seo } from "@/lib/seo";
 import { useStore, type OrderStatus } from "@/lib/store";
 
@@ -36,7 +36,7 @@ function Admin() {
 }
 
 function Panel() {
-  const { orders, stock, drones, set } = useStore();
+  const { orders, offers, drones, set } = useStore();
   const [tab, setTab] = useState<"orders" | "stock" | "drones">("orders");
   const [ph, setPh] = useState(PHARMACIES[0]!.id);
   return (
@@ -54,7 +54,7 @@ function Panel() {
         <div className="space-y-3">
           {orders.map((o) => (
             <div key={o.id} className="card-soft flex flex-wrap items-center justify-between gap-3 p-4">
-              <div><p className="text-lg font-bold">{o.id} · {formatUZS(o.total)} · {o.method}</p><p className="text-muted-foreground">{o.items.map((i) => getMedicine(i.medicineId)?.name).join(", ")} → {o.address}</p></div>
+              <div><p className="text-lg font-bold">{o.id} · {formatSum(o.total)} · {o.method}</p><p className="text-muted-foreground">{o.items.map((i) => getMedicine(i.medicineId)?.name).join(", ")} → {o.address}</p></div>
               <select value={o.status} onChange={(e) => set((s) => ({ orders: s.orders.map((x) => (x.id === o.id ? { ...x, status: e.target.value as OrderStatus } : x)) }))} className="h-12 rounded-xl border-2 border-input bg-card px-3 text-lg">
                 {["Packaged", "On the way", "Delivered"].map((s) => <option key={s}>{s}</option>)}
               </select>
@@ -68,15 +68,27 @@ function Panel() {
             {PHARMACIES.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
           <div className="card-soft divide-y">
-            {MEDICINES.map((m) => {
-              const k = `${ph}:${m.id}`;
-              const s = stock[k] ?? { price: 0, qty: 0 };
-              const upd = (field: "price" | "qty", v: number) => set((st) => ({ stock: { ...st.stock, [k]: { ...(st.stock[k] ?? { price: 0, qty: 0 }), [field]: v } } }));
+            {offers.filter((o) => o.pharmacyId === ph).map((o) => {
+              const upd = (patch: Partial<Offer>) =>
+                set((st) => ({ offers: st.offers.map((x) => (x.pharmacyId === o.pharmacyId && x.medicineId === o.medicineId ? { ...x, ...patch } : x)) }));
+              const fields: { label: string; key: "country" | "manufacturer" | "made" | "expiry" }[] = [
+                { label: "Country", key: "country" },
+                { label: "Manufacturer", key: "manufacturer" },
+                { label: "Made", key: "made" },
+                { label: "Expiry", key: "expiry" },
+              ];
               return (
-                <div key={k} className="grid grid-cols-[1fr_130px_90px] items-center gap-3 p-3 text-lg">
-                  <span className="font-semibold">{m.name}</span>
-                  <input type="number" aria-label="Price" className={inputCls} value={s.price} onChange={(e) => upd("price", Number(e.target.value))} />
-                  <input type="number" aria-label="Quantity" className={inputCls} value={s.qty} onChange={(e) => upd("qty", Number(e.target.value))} />
+                <div key={o.medicineId} className="grid gap-3 p-3 text-lg">
+                  <div className="grid grid-cols-[1fr_130px_90px] items-center gap-3">
+                    <span className="font-semibold">{getMedicine(o.medicineId)?.name}</span>
+                    <input type="number" aria-label="Price" className={inputCls} value={o.price} onChange={(e) => upd({ price: Number(e.target.value) })} />
+                    <input type="number" aria-label="Quantity" className={inputCls} value={o.qty} onChange={(e) => upd({ qty: Number(e.target.value) })} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                    {fields.map((f) => (
+                      <input key={f.key} aria-label={f.label} placeholder={f.label} className={inputCls} value={o[f.key]} onChange={(e) => upd({ [f.key]: e.target.value })} />
+                    ))}
+                  </div>
                 </div>
               );
             })}

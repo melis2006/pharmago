@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { PageTitle, Shell, Stars } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
-import { formatUZS, getMedicine, PHARMACIES } from "@/lib/data";
+import { formatSum, getMedicine, getPharmacy } from "@/lib/data";
 import { addToCart, useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/compare/$id")({
@@ -26,10 +26,12 @@ const FILTERS = ["Cheapest", "Closest", "Free delivery", "24/7"] as const;
 
 function Compare() {
   const { m } = Route.useLoaderData();
-  const { price, set } = useStore();
+  const { price, set, offersFor } = useStore();
   const [view, setView] = useState<"list" | "map">("list");
   const [f, setF] = useState<(typeof FILTERS)[number] | null>(null);
-  let list = [...PHARMACIES];
+  const offers = offersFor(m.id);
+  const offerAt = (pharmacyId: string) => offers.find((o) => o.pharmacyId === pharmacyId)!;
+  let list = offers.map((o) => getPharmacy(o.pharmacyId));
   if (f === "Cheapest") list.sort((a, b) => price(a.id, m.id) - price(b.id, m.id));
   if (f === "Closest") list.sort((a, b) => a.distanceKm - b.distanceKm);
   if (f === "Free delivery") list = list.filter((p) => p.freeDelivery);
@@ -53,7 +55,7 @@ function Compare() {
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-fast px-3 py-1 font-bold text-fast-foreground">You</div>
           {list.map((p) => (
             <div key={p.id} className="absolute -translate-x-1/2 -translate-y-full text-center" style={{ left: `${p.x}%`, top: `${p.y}%` }}>
-              <div className="rounded-lg bg-card px-2 py-1 text-sm font-bold shadow">{formatUZS(price(p.id, m.id))}</div>
+              <div className="rounded-lg bg-card px-2 py-1 text-sm font-bold shadow">{formatSum(price(p.id, m.id))}</div>
               <MapPin className="mx-auto h-8 w-8 fill-primary text-primary-foreground" />
             </div>
           ))}
@@ -74,11 +76,11 @@ function Compare() {
                     {p.freeDelivery && <span className="font-semibold text-primary">Free delivery</span>}
                   </div>
                 </div>
-                <div className="shrink-0 text-2xl font-bold text-primary">{formatUZS(pr)}</div>
+                <div className="shrink-0 text-2xl font-bold text-primary">{formatSum(pr)}</div>
               </div>
               <ul className="mt-3 space-y-1 text-lg">
                 <li className="flex items-center gap-2"><MapPin className="h-5 w-5 shrink-0" />{p.address} · {p.distanceKm} km</li>
-                <li className="flex items-center gap-2"><Factory className="h-5 w-5 shrink-0" />{m.country} · {m.manufacturer}</li>
+                <li className="flex items-center gap-2"><Factory className="h-5 w-5 shrink-0" />{offerAt(p.id).country} · {offerAt(p.id).manufacturer}</li>
                 <li className="flex items-center gap-2"><Phone className="h-5 w-5 shrink-0" />{p.phone}</li>
               </ul>
               <Button className="mt-4 w-full" size="lg" onClick={() => { addToCart(set, { medicineId: m.id, pharmacyId: p.id, pack: 0, unitPrice: pr }); toast.success(`Added from ${p.name}`); }}>Add to cart</Button>

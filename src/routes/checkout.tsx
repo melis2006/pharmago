@@ -3,7 +3,7 @@ import { useState, type ReactNode } from "react";
 import { PageTitle, Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DELIVERY, formatUZS } from "@/lib/data";
+import { DELIVERY, formatSum } from "@/lib/data";
 import { seo } from "@/lib/seo";
 import { useStore } from "@/lib/store";
 
@@ -80,7 +80,7 @@ function Checkout() {
                 <Choice key={k} on={method === k} onClick={() => setMethod(k)}>
                   <span className="block text-xl">{k === "drone" ? "🚁" : "🛵"} {DELIVERY[k].label}</span>
                   <span className="block text-muted-foreground">{DELIVERY[k].time}</span>
-                  <span className="block text-primary">{formatUZS(DELIVERY[k].price)}</span>
+                  <span className="block text-primary">{formatSum(DELIVERY[k].price)}</span>
                 </Choice>
               ))}
             </div>
@@ -101,10 +101,10 @@ function Checkout() {
           </Section>
         </div>
         <div className="card-soft h-fit space-y-3 p-5 text-lg md:sticky md:top-24">
-          <div className="flex justify-between"><span>Subtotal</span><b>{formatUZS(sub)}</b></div>
-          <div className="flex justify-between"><span>Delivery ({DELIVERY[method].label})</span><b>{formatUZS(DELIVERY[method].price)}</b></div>
-          <div className="flex justify-between border-t pt-3 text-2xl font-bold"><span>Total</span><span>{formatUZS(total)}</span></div>
-          <Button size="xl" className="w-full" onClick={submit}>Pay {formatUZS(total)}</Button>
+          <div className="flex justify-between"><span>Subtotal</span><b>{formatSum(sub)}</b></div>
+          <div className="flex justify-between"><span>Delivery ({DELIVERY[method].label})</span><b>{formatSum(DELIVERY[method].price)}</b></div>
+          <div className="flex justify-between border-t pt-3 text-2xl font-bold"><span>Total</span><span>{formatSum(total)}</span></div>
+          <Button size="xl" className="w-full" onClick={submit}>Pay {formatSum(total)}</Button>
         </div>
       </div>
       <Dialog open={!!missing} onOpenChange={() => setMissing(null)}>

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageTitle, Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
-import { formatUZS, getMedicine } from "@/lib/data";
+import { formatSum, getMedicine } from "@/lib/data";
 import { seo } from "@/lib/seo";
 import { useStore } from "@/lib/store";
 
@@ -24,7 +24,7 @@ function Orders() {
               <div className="min-w-0">
                 <p className="text-xl font-bold">{o.id} <span className={`ml-2 rounded-lg px-2 py-0.5 text-base ${o.status === "Delivered" ? "bg-secondary text-primary" : "bg-fast text-fast-foreground"}`}>{o.status}</span></p>
                 <p className="text-lg text-muted-foreground">{o.items.map((i) => getMedicine(i.medicineId)?.name).join(", ")}</p>
-                <p className="text-lg font-semibold">{formatUZS(o.total)}</p>
+                <p className="text-lg font-semibold">{formatSum(o.total)}</p>
               </div>
               <Button asChild size="lg"><Link to="/track/$orderId" params={{ orderId: o.id }}>{o.status === "Delivered" ? "View" : "Track"}</Link></Button>
             </li>

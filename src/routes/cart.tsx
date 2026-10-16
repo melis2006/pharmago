@@ -3,7 +3,7 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import medImg from "@/assets/medicine.jpg";
 import { PageTitle, Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
-import { DELIVERY, formatUZS, getMedicine, getPharmacy } from "@/lib/data";
+import { DELIVERY, formatSum, getMedicine, getPharmacy } from "@/lib/data";
 import { seo } from "@/lib/seo";
 import { useStore } from "@/lib/store";
 
@@ -37,7 +37,7 @@ function CartPage() {
                   <div className="min-w-0 flex-1">
                     <p className="text-xl font-bold">{m.name}</p>
                     <p className="text-muted-foreground">{m.packs[c.pack]?.label} · {getPharmacy(c.pharmacyId)!.name}</p>
-                    <p className="text-lg font-bold text-primary">{formatUZS(c.unitPrice * c.qty)}</p>
+                    <p className="text-lg font-bold text-primary">{formatSum(c.unitPrice * c.qty)}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <Button size="icon" variant="secondary" aria-label="Decrease" onClick={() => qty(c.key, -1)}>{c.qty === 1 ? <Trash2 /> : <Minus />}</Button>
@@ -49,9 +49,9 @@ function CartPage() {
             })}
           </ul>
           <div className="card-soft h-fit space-y-3 p-5 text-lg">
-            <Row k="Subtotal" v={formatUZS(sub)} />
-            <Row k="Delivery fee" v={`from ${formatUZS(fee)}`} />
-            <div className="border-t pt-3 text-2xl font-bold"><Row k="Total" v={formatUZS(sub + fee)} /></div>
+            <Row k="Subtotal" v={formatSum(sub)} />
+            <Row k="Delivery fee" v={`from ${formatSum(fee)}`} />
+            <div className="border-t pt-3 text-2xl font-bold"><Row k="Total" v={formatSum(sub + fee)} /></div>
             <Button asChild size="xl" className="w-full"><Link to="/checkout">Proceed to checkout</Link></Button>
           </div>
         </div>

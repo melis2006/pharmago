@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { MEDICINES, PHARMACIES, type Condition } from "./data";
+import { OFFERS, offersFor, type Condition, type Offer } from "./data";
 
 export type CartItem = { key: string; medicineId: string; pharmacyId: string; pack: number; qty: number; unitPrice: number };
 export type User = { name: string; phone: string; conditions: Condition[] };
@@ -15,7 +15,6 @@ export type Order = {
   rating?: number;
 };
 export type Card = { last4: string; type: string };
-export type Stock = Record<string, { price: number; qty: number }>; // key pharmacyId:medicineId
 export type Drone = { id: string; battery: number; status: "Idle" | "Flying" | "Charging"; rangeKm: number };
 
 type State = {
@@ -26,17 +25,10 @@ type State = {
   orders: Order[];
   addresses: string[];
   cards: Card[];
-  stock: Stock;
+  offers: Offer[];
   drones: Drone[];
   admin: boolean;
 };
-
-const initialStock: Stock = {};
-PHARMACIES.forEach((p) =>
-  MEDICINES.forEach((m) => {
-    initialStock[`${p.id}:${m.id}`] = { price: Math.round((m.price * p.priceFactor) / 100) * 100, qty: 20 + ((m.name.length * p.name.length) % 60) };
-  }),
-);
 
 const initial: State = {
   cart: [],
@@ -46,7 +38,7 @@ const initial: State = {
   orders: [],
   addresses: ["Amir Temur Ave 108, apt 12, Tashkent"],
   cards: [],
-  stock: initialStock,
+  offers: OFFERS,
   drones: [
     { id: "DR-01", battery: 92, status: "Idle", rangeKm: 12 },
     { id: "DR-02", battery: 54, status: "Flying", rangeKm: 7 },
@@ -58,10 +50,13 @@ const initial: State = {
 type Ctx = State & {
   set: (fn: (s: State) => Partial<State>) => void;
   price: (pharmacyId: string, medicineId: string) => number;
+  offersFor: (medicineId: string) => Offer[];
+  // Offer shown by default: the first in-stock one. "Best match" logic comes later.
+  firstOffer: (medicineId: string) => Offer;
 };
 
 const StoreCtx = createContext<Ctx | null>(null);
-const KEY = "pharmago-v1";
+const KEY = "pharmago-v2";
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(initial);
@@ -77,8 +72,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (loaded) localStorage.setItem(KEY, JSON.stringify(state));
   }, [state, loaded]);
   const set: Ctx["set"] = (fn) => setState((s) => ({ ...s, ...fn(s) }));
-  const price = (ph: string, med: string) => state.stock[`${ph}:${med}`]?.price ?? 0;
-  return <StoreCtx.Provider value={{ ...state, set, price }}>{children}</StoreCtx.Provider>;
+  const price = (ph: string, med: string) => state.offers.find((o) => o.pharmacyId === ph && o.medicineId === med)?.price ?? 0;
+  const forMedicine = (med: string) => offersFor(state.offers, med);
+  // Every medicine has at least one offer in OFFERS (checked in src/test/data.test.ts).
+  const firstOffer = (med: string) => forMedicine(med)[0] ?? offersFor(OFFERS, med)[0]!;
+  return <StoreCtx.Provider value={{ ...state, set, price, offersFor: forMedicine, firstOffer }}>{children}</StoreCtx.Provider>;
 }
 
 export function useStore() {

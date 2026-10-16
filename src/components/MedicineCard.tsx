@@ -3,7 +3,7 @@ import { Heart, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import medImg from "@/assets/medicine.jpg";
 import { Button } from "@/components/ui/button";
-import { formatUZS, type Medicine } from "@/lib/data";
+import { formatSum, getPharmacy, type Medicine } from "@/lib/data";
 import { addToCart, useStore } from "@/lib/store";
 import { Stars } from "./Shell";
 
@@ -22,8 +22,9 @@ export function SaveButton({ id }: { id: string }) {
 }
 
 export function MedicineCard({ m, showMeta }: { m: Medicine; showMeta?: boolean }) {
-  const { set, price } = useStore();
-  const p = price("oxymed", m.id);
+  const { set, firstOffer } = useStore();
+  const offer = firstOffer(m.id);
+  const p = offer.price;
   return (
     <div className="card-soft flex flex-col overflow-hidden">
       <div className="relative">
@@ -38,14 +39,14 @@ export function MedicineCard({ m, showMeta }: { m: Medicine; showMeta?: boolean 
         {showMeta && (
           <div className="flex items-center gap-3 text-muted-foreground">
             <Stars r={m.rating} />
-            <span className="flex items-center gap-1"><MapPin className="h-4 w-4" />{m.distanceKm} km</span>
+            <span className="flex items-center gap-1"><MapPin className="h-4 w-4" />{getPharmacy(offer.pharmacyId).distanceKm} km</span>
           </div>
         )}
-        <div className="mt-auto text-2xl font-bold text-primary">{formatUZS(p)}</div>
+        <div className="mt-auto text-2xl font-bold text-primary">{formatSum(p)}</div>
         <Button
           size="lg"
           onClick={() => {
-            addToCart(set, { medicineId: m.id, pharmacyId: "oxymed", pack: 0, unitPrice: p });
+            addToCart(set, { medicineId: m.id, pharmacyId: offer.pharmacyId, pack: 0, unitPrice: p });
             toast.success(`${m.name} added to cart`);
           }}
         >

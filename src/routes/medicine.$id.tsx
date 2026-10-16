@@ -7,7 +7,7 @@ import { SaveButton } from "@/components/MedicineCard";
 import { Shell, Stars } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CONDITIONS, formatUZS, getMedicine, PHARMACIES } from "@/lib/data";
+import { CONDITIONS, formatSum, getMedicine, getPharmacy } from "@/lib/data";
 import { addToCart, useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/medicine/$id")({
@@ -27,23 +27,24 @@ export const Route = createFileRoute("/medicine/$id")({
 
 function MedicinePage() {
   const { m } = Route.useLoaderData();
-  const { user, set, price } = useStore();
+  const { user, set, firstOffer } = useStore();
   const nav = useNavigate();
   const [pack, setPack] = useState(0);
   const [ann, setAnn] = useState(false);
-  const best = PHARMACIES[0]!;
-  const p = Math.round((price(best.id, m.id) * m.packs[pack]!.multiplier) / 100) * 100;
+  const offer = firstOffer(m.id);
+  const best = getPharmacy(offer.pharmacyId);
+  const p = Math.round((offer.price * m.packs[pack]!.multiplier) / 100) * 100;
   const warnings = user ? m.conflicts.filter((c) => user.conditions.includes(c.condition)) : [];
   const add = () => {
     addToCart(set, { medicineId: m.id, pharmacyId: best.id, pack, unitPrice: p });
     toast.success("Added to cart");
   };
   const info: [string, string][] = [
-    ["Country of origin", m.country],
-    ["Manufacturer", m.manufacturer],
-    ["Made", m.made],
-    ["Expiry date", m.expiry],
-    ["Number of tablets", String(m.packs[pack]!.tablets)],
+    ["Country of origin", offer.country],
+    ["Manufacturer", offer.manufacturer],
+    ["Made", offer.made],
+    ["Expiry date", offer.expiry],
+    m.form === "syrup" ? ["Volume", m.packs[pack]!.label] : [`Number of ${m.form}`, String(m.packs[pack]!.tablets)],
     ["Antibiotic", m.antibiotic ? "Yes" : "No"],
     ["Prescription needed", m.prescription ? "Yes" : "No"],
     ["Age group", m.age],
@@ -103,7 +104,7 @@ function MedicinePage() {
               <Button asChild size="sm" variant="secondary"><a href={`tel:${best.phone.replace(/\s/g, "")}`}><Phone /> Contact</a></Button>
             </div>
           </div>
-          <div className="text-3xl font-bold text-primary">{formatUZS(p)}</div>
+          <div className="text-3xl font-bold text-primary">{formatSum(p)}</div>
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-3">
           <Button asChild variant="outline" size="lg"><Link to="/compare/$id" params={{ id: m.id }}>Browse other options</Link></Button>
