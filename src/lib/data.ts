@@ -35,6 +35,9 @@ export const CATEGORIES = [
 export type Medicine = {
   id: string;
   name: string;
+  strength?: string; // shown as a separate pill, e.g. "200 mg"
+  drugClass: string;
+  ingredients: string; // active ingredients
   category: string;
   form: "tablets" | "capsules" | "lozenges" | "syrup" | "sachets";
   symptoms: string[];
@@ -58,6 +61,9 @@ export const MEDICINES: Medicine[] = [
   {
     id: "fanigan",
     name: "Fanigan 200 mg",
+    strength: "200 mg",
+    drugClass: "NSAID",
+    ingredients: "Diclofenac sodium + Paracetamol",
     category: "pain",
     form: "tablets",
     symptoms: ["pain", "fever", "headache", "toothache", "back pain"],
@@ -81,6 +87,9 @@ export const MEDICINES: Medicine[] = [
   {
     id: "fanigolin",
     name: "Fanigolin 200 mg",
+    strength: "200 mg",
+    drugClass: "Throat antiseptic",
+    ingredients: "Amylmetacresol + Dichlorobenzyl alcohol",
     category: "cold",
     form: "lozenges",
     symptoms: ["sore throat", "cough", "cold"],
@@ -97,6 +106,9 @@ export const MEDICINES: Medicine[] = [
   {
     id: "fanibrufen",
     name: "Fanibrufen 300 ml",
+    strength: "300 ml",
+    drugClass: "NSAID",
+    ingredients: "Ibuprofen",
     category: "pain",
     form: "syrup",
     symptoms: ["fever", "pain", "headache", "toothache"],
@@ -119,6 +131,9 @@ export const MEDICINES: Medicine[] = [
   {
     id: "bronho-munal",
     name: "Bronho-Munal 7 mg",
+    strength: "7 mg",
+    drugClass: "Immunostimulant",
+    ingredients: "Bacterial lysate",
     category: "vitamins",
     form: "capsules",
     symptoms: ["immunity", "cough", "cold", "bronchitis"],
@@ -135,6 +150,8 @@ export const MEDICINES: Medicine[] = [
   {
     id: "immunoaktiv",
     name: "ImmunoAktiv",
+    drugClass: "Multivitamin",
+    ingredients: "Vitamin C + Vitamin D3 + Zinc",
     category: "vitamins",
     form: "tablets",
     symptoms: ["immunity", "vitamins", "tiredness"],
@@ -150,6 +167,9 @@ export const MEDICINES: Medicine[] = [
   {
     id: "paracetamol",
     name: "Paracetamol 500 mg",
+    strength: "500 mg",
+    drugClass: "Analgesic",
+    ingredients: "Paracetamol",
     category: "pain",
     form: "tablets",
     symptoms: ["fever", "headache", "pain"],
@@ -166,6 +186,8 @@ export const MEDICINES: Medicine[] = [
   {
     id: "teraflu",
     name: "Teraflu Lemon",
+    drugClass: "Cold & flu remedy",
+    ingredients: "Paracetamol + Pheniramine + Phenylephrine",
     category: "cold",
     form: "sachets",
     symptoms: ["cold", "flu", "fever", "cough"],
@@ -187,6 +209,9 @@ export const MEDICINES: Medicine[] = [
   {
     id: "ibuprofen",
     name: "Ibuprofen 400 mg",
+    strength: "400 mg",
+    drugClass: "NSAID",
+    ingredients: "Ibuprofen",
     category: "headache",
     form: "tablets",
     symptoms: ["headache", "pain", "toothache"],
@@ -206,6 +231,9 @@ export const MEDICINES: Medicine[] = [
   {
     id: "cetirizine",
     name: "Cetirizine 10 mg",
+    strength: "10 mg",
+    drugClass: "Antihistamine",
+    ingredients: "Cetirizine",
     category: "allergy",
     form: "tablets",
     symptoms: ["allergy", "sneezing", "itching"],
@@ -221,6 +249,9 @@ export const MEDICINES: Medicine[] = [
   {
     id: "amoxicillin",
     name: "Amoxicillin 500 mg",
+    strength: "500 mg",
+    drugClass: "Penicillin antibiotic",
+    ingredients: "Amoxicillin",
     category: "antibiotics",
     form: "capsules",
     symptoms: ["infection", "sore throat"],
@@ -236,6 +267,9 @@ export const MEDICINES: Medicine[] = [
   {
     id: "vitamin-c",
     name: "Vitamin C 1000 mg",
+    strength: "1000 mg",
+    drugClass: "Vitamin",
+    ingredients: "Ascorbic acid",
     category: "vitamins",
     form: "tablets",
     symptoms: ["immunity", "cold"],
@@ -251,6 +285,9 @@ export const MEDICINES: Medicine[] = [
   {
     id: "omeprazole",
     name: "Omeprazole 20 mg",
+    strength: "20 mg",
+    drugClass: "Proton pump inhibitor",
+    ingredients: "Omeprazole",
     category: "stomach",
     form: "capsules",
     symptoms: ["heartburn", "stomach pain"],
@@ -266,6 +303,9 @@ export const MEDICINES: Medicine[] = [
   {
     id: "aspirin-cardio",
     name: "Aspirin Cardio 100 mg",
+    strength: "100 mg",
+    drugClass: "Antiplatelet",
+    ingredients: "Acetylsalicylic acid",
     category: "cardio",
     form: "tablets",
     symptoms: ["heart", "blood thinning"],
@@ -293,6 +333,8 @@ export type Pharmacy = {
   phone: string;
   deliveryMin: number;
   freeDelivery: boolean;
+  deliveryPrice: number; // sum, 0 when delivery is free
+  color: string; // logo background
   open247: boolean;
   x: number; // position on the demo map, in %
   y: number;
@@ -300,12 +342,12 @@ export type Pharmacy = {
 
 // Demo pharmacies. The first three are from the Figma design; the rest are fictional.
 export const PHARMACIES: Pharmacy[] = [
-  { id: "horoshiy", name: "Horoshiy Pharm", tagline: "Discounts on best deals", rating: 4.5, address: "Durmon Yo'li 35, Tashkent", distanceKm: 4.5, phone: "+998 99 999 88 77", deliveryMin: 15, freeDelivery: true, open247: false, x: 25, y: 30 },
-  { id: "algo", name: "Algo Pharm", tagline: "Free delivery", rating: 4.5, address: "Alisher Navoiy 12, Tashkent", distanceKm: 4.7, phone: "+998 91 111 87 77", deliveryMin: 20, freeDelivery: true, open247: false, x: 72, y: 25 },
-  { id: "fomeks", name: "Fomeks Pharm", tagline: "Discounts on best deals", rating: 4.4, address: "Amir Temur 2, Tashkent", distanceKm: 4.8, phone: "+998 94 959 78 77", deliveryMin: 24, freeDelivery: true, open247: false, x: 80, y: 75 },
-  { id: "shifo", name: "Shifo Pharm", tagline: "Care close to home", rating: 4.7, address: "Chilonzor 9, Tashkent", distanceKm: 1.2, phone: "+998 90 312 45 67", deliveryMin: 30, freeDelivery: false, open247: false, x: 40, y: 60 },
-  { id: "soglom", name: "Sog'lom Plus", tagline: "Everyday low prices", rating: 4.2, address: "Yunusobod 4, Tashkent", distanceKm: 2.6, phone: "+998 93 540 21 09", deliveryMin: 35, freeDelivery: false, open247: false, x: 60, y: 42 },
-  { id: "medline", name: "MedLine 24/7", tagline: "Open day and night", rating: 4.6, address: "Mirzo Ulug'bek 56, Tashkent", distanceKm: 3.3, phone: "+998 97 700 24 07", deliveryMin: 25, freeDelivery: false, open247: true, x: 18, y: 78 },
+  { id: "horoshiy", name: "Horoshiy Pharm", tagline: "Discounts on best deals", rating: 4.5, address: "Durmon Yo'li 35, Tashkent", distanceKm: 4.5, phone: "+998 99 999 88 77", deliveryMin: 15, freeDelivery: true, deliveryPrice: 0, color: "#1f9d6b", open247: false, x: 25, y: 30 },
+  { id: "algo", name: "Algo Pharm", tagline: "Free delivery", rating: 4.5, address: "Alisher Navoiy 12, Tashkent", distanceKm: 4.7, phone: "+998 91 111 87 77", deliveryMin: 20, freeDelivery: true, deliveryPrice: 0, color: "#2563eb", open247: false, x: 72, y: 25 },
+  { id: "fomeks", name: "Fomeks Pharm", tagline: "Discounts on best deals", rating: 4.4, address: "Amir Temur 2, Tashkent", distanceKm: 4.8, phone: "+998 94 959 78 77", deliveryMin: 24, freeDelivery: true, deliveryPrice: 0, color: "#c2410c", open247: false, x: 80, y: 75 },
+  { id: "shifo", name: "Shifo Pharm", tagline: "Care close to home", rating: 4.7, address: "Chilonzor 9, Tashkent", distanceKm: 1.2, phone: "+998 90 312 45 67", deliveryMin: 30, freeDelivery: false, deliveryPrice: 10000, color: "#7c3aed", open247: false, x: 45, y: 93 },
+  { id: "soglom", name: "Sog'lom Plus", tagline: "Everyday low prices", rating: 4.2, address: "Yunusobod 4, Tashkent", distanceKm: 2.6, phone: "+998 93 540 21 09", deliveryMin: 35, freeDelivery: false, deliveryPrice: 8000, color: "#0f766e", open247: false, x: 60, y: 42 },
+  { id: "medline", name: "MedLine 24/7", tagline: "Open day and night", rating: 4.6, address: "Mirzo Ulug'bek 56, Tashkent", distanceKm: 3.3, phone: "+998 97 700 24 07", deliveryMin: 25, freeDelivery: false, deliveryPrice: 12000, color: "#be123c", open247: true, x: 18, y: 78 },
 ];
 
 // One pharmacy selling one medicine. price is for the medicine's first pack; qty is units in stock.
@@ -335,7 +377,7 @@ const offer = (
 export const OFFERS: Offer[] = [
   offer("horoshiy", "fanigan", 35000, 40, "India", "Kusum Healthcare Pvt. Ltd.", "12/01/24", "11/03/27"),
   offer("algo", "fanigan", 38500, 25, "Germany", "Merck Healthcare", "05/06/25", "05/06/28"),
-  offer("fomeks", "fanigan", 33000, 18, "Russia", "Sanofi", "20/09/25", "20/09/28"),
+  offer("fomeks", "fanigan", 37000, 18, "Russia", "Sanofi", "20/09/25", "20/09/28"),
   offer("shifo", "fanigan", 36500, 12, "India", "Kusum Healthcare Pvt. Ltd.", "02/02/26", "02/02/29"),
 
   offer("horoshiy", "fanigolin", 28000, 30, "India", "Kusum Healthcare Pvt. Ltd.", "10/03/25", "10/03/28"),
@@ -413,3 +455,5 @@ export const DELIVERY = {
   drone: { label: "Drone", time: "10–15 min", price: 15000 },
   courier: { label: "Courier", time: "20–30 min", price: 10000 },
 } as const;
+
+export const deliveryLabel = (p: Pharmacy) => (p.freeDelivery ? "Free delivery" : `Delivery ${formatSum(p.deliveryPrice)}`);

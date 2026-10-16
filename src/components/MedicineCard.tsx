@@ -22,8 +22,8 @@ export function SaveButton({ id }: { id: string }) {
 }
 
 export function MedicineCard({ m, showMeta }: { m: Medicine; showMeta?: boolean }) {
-  const { set, firstOffer } = useStore();
-  const offer = firstOffer(m.id);
+  const { set, bestOffer } = useStore();
+  const offer = bestOffer(m.id);
   const p = offer.price;
   return (
     <div className="card-soft flex flex-col overflow-hidden">

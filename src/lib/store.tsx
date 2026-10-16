@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { OFFERS, offersFor, type Condition, type Offer } from "./data";
+import { bestOffer as pickBestOffer } from "./pricing";
 
 export type CartItem = { key: string; medicineId: string; pharmacyId: string; pack: number; qty: number; unitPrice: number };
 export type User = { name: string; phone: string; conditions: Condition[] };
@@ -51,12 +52,13 @@ type Ctx = State & {
   set: (fn: (s: State) => Partial<State>) => void;
   price: (pharmacyId: string, medicineId: string) => number;
   offersFor: (medicineId: string) => Offer[];
-  // Offer shown by default: the first in-stock one. "Best match" logic comes later.
-  firstOffer: (medicineId: string) => Offer;
+  // Best match offer (see src/lib/pricing.ts); falls back to an out-of-stock offer if none is in stock.
+  bestOffer: (medicineId: string) => Offer;
 };
 
 const StoreCtx = createContext<Ctx | null>(null);
-const KEY = "pharmago-v2";
+// Bump when the shape or meaning of saved data changes, so old saved state is ignored.
+const KEY = "pharmago-v3";
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(initial);
@@ -75,8 +77,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const price = (ph: string, med: string) => state.offers.find((o) => o.pharmacyId === ph && o.medicineId === med)?.price ?? 0;
   const forMedicine = (med: string) => offersFor(state.offers, med);
   // Every medicine has at least one offer in OFFERS (checked in src/test/data.test.ts).
-  const firstOffer = (med: string) => forMedicine(med)[0] ?? offersFor(OFFERS, med)[0]!;
-  return <StoreCtx.Provider value={{ ...state, set, price, offersFor: forMedicine, firstOffer }}>{children}</StoreCtx.Provider>;
+  const best = (med: string) => pickBestOffer(state.offers, med) ?? forMedicine(med)[0] ?? offersFor(OFFERS, med)[0]!;
+  return <StoreCtx.Provider value={{ ...state, set, price, offersFor: forMedicine, bestOffer: best }}>{children}</StoreCtx.Provider>;
 }
 
 export function useStore() {
