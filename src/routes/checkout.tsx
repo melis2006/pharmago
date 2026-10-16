@@ -5,6 +5,7 @@ import { PageTitle, Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DELIVERY, formatSum, getMedicine } from "@/lib/data";
+import { orderTotals, type DeliveryMethod } from "@/lib/pricing";
 import { seo } from "@/lib/seo";
 import { useStore } from "@/lib/store";
 
@@ -30,12 +31,11 @@ function Checkout() {
   const [where, setWhere] = useState("Doorstep");
   const [when, setWhen] = useState<"asap" | "time">("asap");
   const [time, setTime] = useState("");
-  const [method, setMethod] = useState<"drone" | "courier">("drone");
+  const [method, setMethod] = useState<DeliveryMethod>("drone");
   const [pay, setPay] = useState<string | null>(null);
   const [card, setCard] = useState({ num: "", exp: "" });
   const [missing, setMissing] = useState<string[] | null>(null);
-  const sub = cart.reduce((a, c) => a + c.unitPrice * c.qty, 0);
-  const total = sub + DELIVERY[method].price;
+  const { subtotal: sub, delivery, total } = orderTotals(cart, method);
   const needsCard = pay && pay !== "Cash" && cards.length === 0;
 
   const submit = () => {
@@ -117,7 +117,7 @@ function Checkout() {
             </ul>
           )}
           <div className="flex justify-between"><span>Subtotal</span><b>{formatSum(sub)}</b></div>
-          <div className="flex justify-between"><span>Delivery ({DELIVERY[method].label})</span><b>{formatSum(DELIVERY[method].price)}</b></div>
+          <div className="flex justify-between"><span>Delivery ({DELIVERY[method].label})</span><b>{formatSum(delivery)}</b></div>
           <div className="flex justify-between border-t pt-3 text-2xl font-bold"><span>Total</span><span>{formatSum(total)}</span></div>
           <Button size="xl" className="w-full" onClick={submit}>Pay {formatSum(total)}</Button>
         </div>

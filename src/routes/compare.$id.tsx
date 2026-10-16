@@ -6,8 +6,8 @@ import { MedicineImage } from "@/components/MedicineImage";
 import { ContactButton, PharmacyLogo, StarRow } from "@/components/Pharmacy";
 import { PageTitle, Shell, soon } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
-import { deliveryLabel, formatSum, getMedicine, getPharmacy, type Offer } from "@/lib/data";
-import { cheapestOffer } from "@/lib/pricing";
+import { deliveryLabel, formatSum, getMedicine } from "@/lib/data";
+import { cheapestOffer, compareOptions, type OptionRow, type OptionsFilter, type OptionsSort } from "@/lib/pricing";
 import { addToCart, useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/compare/$id")({
@@ -25,28 +25,21 @@ export const Route = createFileRoute("/compare/$id")({
   component: Options,
 });
 
-type Sort = "Cheapest" | "Closest";
-type Filter = "Free delivery" | "24/7";
-
 const chip = (on: boolean) =>
   `min-h-12 rounded-full border-2 px-5 py-2 text-lg font-semibold ${on ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card"}`;
 
 function Options() {
   const { m } = Route.useLoaderData();
-  const { offers: allOffers, offersFor, set } = useStore();
+  const { offers: allOffers, set } = useStore();
   const [view, setView] = useState<"list" | "map">("list");
-  const [sort, setSort] = useState<Sort>("Cheapest");
-  const [filters, setFilters] = useState<Filter[]>([]);
+  const [sort, setSort] = useState<OptionsSort>("Cheapest");
+  const [filters, setFilters] = useState<OptionsFilter[]>([]);
   const [highlight, setHighlight] = useState<string | null>(null);
 
   const cheapest = cheapestOffer(allOffers, m.id);
-  let rows = offersFor(m.id).map((o) => ({ o, p: getPharmacy(o.pharmacyId) }));
-  if (filters.includes("Free delivery")) rows = rows.filter((r) => r.p.freeDelivery);
-  if (filters.includes("24/7")) rows = rows.filter((r) => r.p.open247);
-  // Out-of-stock offers always go last.
-  rows.sort((a, b) => Number(b.o.qty > 0) - Number(a.o.qty > 0) || (sort === "Cheapest" ? a.o.price - b.o.price : a.p.distanceKm - b.p.distanceKm));
+  const rows = compareOptions(allOffers, m.id, sort, filters);
 
-  const toggle = (f: Filter) => setFilters((cur) => (cur.includes(f) ? cur.filter((x) => x !== f) : [...cur, f]));
+  const toggle = (f: OptionsFilter) => setFilters((cur) => (cur.includes(f) ? cur.filter((x) => x !== f) : [...cur, f]));
   const pick = (pharmacyId: string) => {
     setHighlight(pharmacyId);
     document.getElementById(`option-${pharmacyId}`)?.scrollIntoView({ block: "center" });
@@ -140,11 +133,11 @@ function Options() {
 }
 
 // "India | NSAID | Diclofenac sodium + Paracetamol | 100 tablets | Kusum Healthcare Pvt. Ltd."
-const offerLine = (o: Offer, drugClass: string, ingredients: string, pack: string) =>
+const offerLine = (o: OptionRow["o"], drugClass: string, ingredients: string, pack: string) =>
   [o.country, drugClass, ingredients, pack, o.manufacturer].join(" | ");
 
 // Stylised demo map: pharmacies are placed by their x/y (in %), "You" is in the centre.
-function OptionsMap({ rows, highlight, onPick }: { rows: { o: Offer; p: ReturnType<typeof getPharmacy> }[]; highlight: string | null; onPick: (id: string) => void }) {
+function OptionsMap({ rows, highlight, onPick }: { rows: OptionRow[]; highlight: string | null; onPick: (id: string) => void }) {
   return (
     <div className="card-soft relative mb-6 h-96 overflow-hidden bg-secondary" role="group" aria-label="Map of pharmacies">
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>

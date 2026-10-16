@@ -1,4 +1,4 @@
-import { getPharmacy, offersFor, type Offer } from "./data";
+import { DELIVERY, getPharmacy, offersFor, type Offer, type Pharmacy } from "./data";
 
 // How much each factor counts when choosing the "best match" pharmacy. Price matters most.
 export const BEST_MATCH_WEIGHTS = { price: 0.55, distance: 0.2, rating: 0.15, freeDelivery: 0.1 };
@@ -42,4 +42,27 @@ export function cheapestOffer(offers: Offer[], medicineId: string): Offer | unde
   return offersFor(offers, medicineId)
     .filter((o) => o.qty > 0)
     .sort((a, b) => a.price - b.price)[0];
+}
+
+// Options page ("Browse other options"): sort and filter one medicine's offers.
+export type OptionsSort = "Cheapest" | "Closest";
+export type OptionsFilter = "Free delivery" | "24/7";
+export type OptionRow = { o: Offer; p: Pharmacy };
+
+// Out-of-stock offers stay in the list (so the user sees them) but always come last.
+export function compareOptions(offers: Offer[], medicineId: string, sort: OptionsSort, filters: readonly OptionsFilter[] = []): OptionRow[] {
+  let rows = offersFor(offers, medicineId).map((o) => ({ o, p: getPharmacy(o.pharmacyId) }));
+  if (filters.includes("Free delivery")) rows = rows.filter((r) => r.p.freeDelivery);
+  if (filters.includes("24/7")) rows = rows.filter((r) => r.p.open247);
+  return rows.sort(
+    (a, b) => Number(b.o.qty > 0) - Number(a.o.qty > 0) || (sort === "Cheapest" ? a.o.price - b.o.price : a.p.distanceKm - b.p.distanceKm),
+  );
+}
+
+// Cart and checkout totals. There is no delivery fee for an empty order.
+export type DeliveryMethod = keyof typeof DELIVERY;
+export function orderTotals(items: readonly { unitPrice: number; qty: number }[], method: DeliveryMethod) {
+  const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.qty, 0);
+  const delivery = items.length > 0 ? DELIVERY[method].price : 0;
+  return { subtotal, delivery, total: subtotal + delivery };
 }

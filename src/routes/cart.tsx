@@ -3,7 +3,8 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import { MedicineImage } from "@/components/MedicineImage";
 import { PageTitle, Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
-import { DELIVERY, formatSum, getMedicine, getPharmacy } from "@/lib/data";
+import { formatSum, getMedicine, getPharmacy } from "@/lib/data";
+import { orderTotals } from "@/lib/pricing";
 import { seo } from "@/lib/seo";
 import { useStore } from "@/lib/store";
 
@@ -14,8 +15,8 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const { cart, set } = useStore();
-  const sub = cart.reduce((a, c) => a + c.unitPrice * c.qty, 0);
-  const fee = cart.length ? DELIVERY.courier.price : 0;
+  // Courier is the cheaper delivery, so the cart shows "from <courier fee>"; the method is picked at checkout.
+  const { subtotal: sub, delivery: fee, total } = orderTotals(cart, "courier");
   const qty = (key: string, d: number) =>
     set((s) => ({ cart: s.cart.map((c) => (c.key === key ? { ...c, qty: c.qty + d } : c)).filter((c) => c.qty > 0) }));
   return (
@@ -52,7 +53,7 @@ function CartPage() {
           <div className="card-soft h-fit space-y-3 p-5 text-lg">
             <Row k="Subtotal" v={formatSum(sub)} />
             <Row k="Delivery fee" v={`from ${formatSum(fee)}`} />
-            <div className="border-t pt-3 text-2xl font-bold"><Row k="Total" v={formatSum(sub + fee)} /></div>
+            <div className="border-t pt-3 text-2xl font-bold"><Row k="Total" v={formatSum(total)} /></div>
             <Button asChild size="xl" className="w-full"><Link to="/checkout">Proceed to checkout</Link></Button>
           </div>
         </div>

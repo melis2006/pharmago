@@ -1,14 +1,15 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { AlertTriangle, BookOpen, Candy, FlaskConical, MapPin, Package, Pill, Tablets, Zap } from "lucide-react";
+import { BookOpen, Candy, FlaskConical, MapPin, Package, Pill, Tablets, Zap } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { HealthWarning } from "@/components/HealthWarning";
 import { SaveButton } from "@/components/MedicineCard";
 import { MedicineImage } from "@/components/MedicineImage";
 import { ContactButton, PharmacyLogo, StarRow } from "@/components/Pharmacy";
 import { Shell, Stars } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { brandName, CONDITIONS, formatSum, getMedicine, getPharmacy } from "@/lib/data";
+import { brandName, formatSum, getMedicine, getPharmacy } from "@/lib/data";
 import { addToCart, useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/medicine/$id")({
@@ -43,7 +44,6 @@ function MedicinePage() {
   const ph = getPharmacy(offer.pharmacyId);
   const inStock = offer.qty > 0;
   const p = Math.round((offer.price * m.packs[pack]!.multiplier) / 100) * 100;
-  const warnings = user ? m.conflicts.filter((c) => user.conditions.includes(c.condition)) : [];
   const FormIcon = FORM_ICON[m.form];
   const add = () => {
     addToCart(set, { medicineId: m.id, pharmacyId: ph.id, pack, unitPrice: p });
@@ -59,17 +59,7 @@ function MedicinePage() {
   ];
   return (
     <Shell>
-      {warnings.length > 0 && (
-        <div role="alert" className="mb-6 rounded-2xl border-4 border-destructive bg-destructive-soft p-5">
-          <div className="flex items-center gap-3 text-2xl font-bold text-destructive"><AlertTriangle className="h-8 w-8 shrink-0" /> Not recommended for you</div>
-          <ul className="mt-2 space-y-1 text-lg">
-            {warnings.map((w) => (
-              <li key={w.condition}><b>{CONDITIONS.find((c) => c.id === w.condition)?.label}:</b> {w.reason}</li>
-            ))}
-          </ul>
-          <p className="mt-2 text-lg font-bold">Please consult your doctor before taking this medicine.</p>
-        </div>
-      )}
+      <HealthWarning m={m} conditions={user?.conditions ?? []} />
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-start">
         <div>
           <div className="relative">
