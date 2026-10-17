@@ -28,6 +28,9 @@ The code was originally generated with Lovable and exported. This repository
 - TanStack Start / TanStack Router (file-based routing, SSR) + TanStack Query
 - Build config via `@lovable.dev/vite-tanstack-config` (wraps tanstackStart, React, Tailwind,
   tsconfig paths, Nitro — do not add those plugins to `vite.config.ts` again)
+- Deployed on **Vercel**: `nitro: { preset: process.env.NITRO_PRESET || "vercel" }` in
+  `vite.config.ts`; the build writes `.vercel/output` (static files + one SSR function for all
+  routes, so deep links work). No environment variables are needed.
 - Tailwind CSS v4 (`src/styles.css`), shadcn/ui components on Radix (`src/components/ui`),
   lucide-react icons, sonner toasts
 - Vitest + Testing Library + jsdom for tests
@@ -79,7 +82,7 @@ Google Fonts (fonts are self-hosted via `@fontsource`). Never store the password
 ```sh
 npm install        # .npmrc sets legacy-peer-deps=true (avoids npm "edgesOut" crash)
 npm run dev        # dev server on http://localhost:8080
-npm run build      # production build into .output/
+npm run build      # production build for Vercel into .vercel/output/
 npm test           # vitest run
 npm run lint       # eslint + prettier, must have 0 errors
 npm run format     # prettier --write . (run before committing)
