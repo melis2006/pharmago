@@ -17,6 +17,7 @@ import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as OrdersRouteImport } from './routes/orders'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SearchRouteImport } from './routes/search'
@@ -65,6 +66,11 @@ const OrdersRoute = OrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/orders': typeof OrdersRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/orders': typeof OrdersRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
@@ -145,6 +153,7 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/orders': typeof OrdersRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/saved': typeof SavedRoute
   '/search': typeof SearchRoute
@@ -164,6 +173,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/login'
     | '/orders'
+    | '/privacy'
     | '/profile'
     | '/saved'
     | '/search'
@@ -181,6 +191,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/login'
     | '/orders'
+    | '/privacy'
     | '/profile'
     | '/saved'
     | '/search'
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/login'
     | '/orders'
+    | '/privacy'
     | '/profile'
     | '/saved'
     | '/search'
@@ -216,6 +228,7 @@ export interface RootRouteChildren {
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
   OrdersRoute: typeof OrdersRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   SavedRoute: typeof SavedRoute
   SearchRoute: typeof SearchRoute
@@ -283,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -344,6 +364,7 @@ const rootRouteChildren: RootRouteChildren = {
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
   OrdersRoute: OrdersRoute,
+  PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   SavedRoute: SavedRoute,
   SearchRoute: SearchRoute,

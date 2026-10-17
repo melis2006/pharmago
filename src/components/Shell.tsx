@@ -52,6 +52,7 @@ export function Shell({ children }: { children: ReactNode }) {
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
+      <Footer />
       <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t bg-card md:hidden">
         {NAV.map((n) => {
           const active = path.startsWith(n.to);
@@ -87,4 +88,16 @@ export function PageTitle({ children, sub }: { children: ReactNode; sub?: string
 
 export function Stars({ r }: { r: number }) {
   return <span className="font-semibold"><span className="text-star">★</span> {r.toFixed(1)}</span>;
+}
+
+export function Footer() {
+  return (
+    <footer className="mx-auto max-w-6xl border-t px-4 py-6 text-lg">
+      <p className="font-semibold">Demo project. Information is not medical advice. In an emergency call 103.</p>
+      <p className="mt-2">
+        <Link to="/privacy" className="font-semibold text-primary underline underline-offset-4">Privacy</Link>
+        <span className="text-muted-foreground"> · Your data stays on this device.</span>
+      </p>
+    </footer>
+  );
 }

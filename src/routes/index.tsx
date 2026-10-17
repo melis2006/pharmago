@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Logo, soon } from "@/components/Shell";
+import { Footer, Logo, soon } from "@/components/Shell";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
@@ -16,7 +16,8 @@ const LANGS = [
 function Welcome() {
   const nav = useNavigate();
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-5 py-10">
+    <div className="flex min-h-screen flex-col">
+    <div className="flex flex-1 flex-col items-center justify-center px-5 py-10">
       <Logo size="text-5xl" />
       <p className="mt-3 text-xl text-muted-foreground">Your health, delivered</p>
       <h1 className="mt-12 text-center text-4xl font-bold md:text-5xl">Assalamu alaikum!</h1>
@@ -36,6 +37,8 @@ function Welcome() {
           </button>
         ))}
       </div>
+    </div>
+    <Footer />
     </div>
   );
 }

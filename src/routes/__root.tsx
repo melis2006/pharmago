@@ -11,7 +11,6 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { StoreProvider } from "@/lib/store";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -33,10 +32,10 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
-  console.error(error);
   const router = useRouter();
+  // Errors are only logged locally; nothing is reported to any external service.
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    console.error(error);
   }, [error]);
 
   return (
@@ -78,9 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Lexend:wght@500;600;700;800&display=swap" },
+      // Fonts are self-hosted via @fontsource in styles.css: the app makes no requests to other hosts.
     ],
   }),
   shellComponent: RootShell,

@@ -3,7 +3,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Logo, Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
+import { HealthConsent, LocalOnlyNote } from "@/components/Privacy";
 import { CONDITIONS, type Condition } from "@/lib/data";
+import { conditionsToSave } from "@/lib/privacy";
 import { seo } from "@/lib/seo";
 import { useStore } from "@/lib/store";
 
@@ -20,6 +22,13 @@ function Login() {
   const [step, setStep] = useState<1 | 2>(1);
   const [f, setF] = useState({ name: "", phone: "+998 ", password: "" });
   const [conds, setConds] = useState<Condition[]>([]);
+  const [consent, setConsent] = useState(false);
+  const finish = () => {
+    const saved = conditionsToSave(conds, consent);
+    set(() => ({ user: { name: f.name.trim(), phone: f.phone, conditions: saved, healthConsent: consent && saved.length > 0 } }));
+    toast.success(`Welcome, ${f.name.trim()}!`, conds.length > 0 && saved.length === 0 ? { description: "Your health conditions were not saved." } : undefined);
+    nav({ to: "/home" });
+  };
   return (
     <Shell>
       <div className="mx-auto max-w-lg">
@@ -54,7 +63,18 @@ function Login() {
                 );
               })}
             </div>
-            <Button size="xl" onClick={() => { set(() => ({ user: { name: f.name.trim(), phone: f.phone, conditions: conds } })); toast.success(`Welcome, ${f.name}!`); nav({ to: "/home" }); }}>Finish</Button>
+            {conds.length > 0 && (
+              <>
+                <HealthConsent checked={consent} onChange={setConsent} />
+                {!consent && (
+                  <p role="status" className="text-lg font-semibold">
+                    Without your agreement your health conditions will not be saved, and you will not get warnings.
+                  </p>
+                )}
+              </>
+            )}
+            <LocalOnlyNote />
+            <Button size="xl" onClick={finish}>Finish</Button>
           </div>
         )}
       </div>

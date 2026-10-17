@@ -1,9 +1,11 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { OFFERS, offersFor, type Condition, type Offer } from "./data";
 import { bestOffer as pickBestOffer } from "./pricing";
+import { deleteMyData, removeLegacyData, sanitizeUser, STORAGE_KEY } from "./privacy";
 
 export type CartItem = { key: string; medicineId: string; pharmacyId: string; pack: number; qty: number; unitPrice: number };
-export type User = { name: string; phone: string; conditions: Condition[] };
+// conditions are only kept when healthConsent is true (enforced on every update).
+export type User = { name: string; phone: string; conditions: Condition[]; healthConsent: boolean };
 export type OrderStatus = "Packaged" | "On the way" | "Delivered";
 export type Order = {
   id: string;
@@ -54,31 +56,45 @@ type Ctx = State & {
   offersFor: (medicineId: string) => Offer[];
   // Best match offer (see src/lib/pricing.ts); falls back to an out-of-stock offer if none is in stock.
   bestOffer: (medicineId: string) => Offer;
+  logout: () => void;
+  // Removes everything PharmaGO stored in this browser and resets the app.
+  deleteAllData: () => void;
 };
 
 const StoreCtx = createContext<Ctx | null>(null);
-// Bump when the shape or meaning of saved data changes, so old saved state is ignored.
-const KEY = "pharmago-v3";
+
+// Every change to the user goes through the consent rule (see src/lib/privacy.ts).
+const withConsentRule = (s: State): State => (s.user ? { ...s, user: sanitizeUser(s.user) } : s);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(initial);
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setState({ ...initial, ...JSON.parse(raw) });
-    } catch {}
+      removeLegacyData(localStorage);
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) setState(withConsentRule({ ...initial, ...JSON.parse(raw) }));
+    } catch {
+      // Unreadable saved data: start fresh.
+    }
     setLoaded(true);
   }, []);
   useEffect(() => {
-    if (loaded) localStorage.setItem(KEY, JSON.stringify(state));
+    // The untouched initial state is not saved, so after "Delete my data" nothing is written back.
+    if (loaded && state !== initial) localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, loaded]);
-  const set: Ctx["set"] = (fn) => setState((s) => ({ ...s, ...fn(s) }));
+  const set: Ctx["set"] = (fn) => setState((s) => withConsentRule({ ...s, ...fn(s) }));
+  // Logging out drops the user, and with it the name, phone and health conditions.
+  const logout = () => setState((s) => ({ ...s, user: null }));
+  const deleteAllData = () => {
+    deleteMyData(localStorage);
+    setState(initial);
+  };
   const price = (ph: string, med: string) => state.offers.find((o) => o.pharmacyId === ph && o.medicineId === med)?.price ?? 0;
   const forMedicine = (med: string) => offersFor(state.offers, med);
   // Every medicine has at least one offer in OFFERS (checked in src/test/data.test.ts).
   const best = (med: string) => pickBestOffer(state.offers, med) ?? forMedicine(med)[0] ?? offersFor(OFFERS, med)[0]!;
-  return <StoreCtx.Provider value={{ ...state, set, price, offersFor: forMedicine, bestOffer: best }}>{children}</StoreCtx.Provider>;
+  return <StoreCtx.Provider value={{ ...state, set, price, offersFor: forMedicine, bestOffer: best, logout, deleteAllData }}>{children}</StoreCtx.Provider>;
 }
 
 export function useStore() {

@@ -17,7 +17,7 @@ The code was originally generated with Lovable and exported. This repository
 (https://github.com/melis2006/pharmago) is **not** connected to Lovable — develop here only.
 
 - **All data is mock/demo data.** There is no backend; app state lives in the browser
-  (`localStorage`, key `pharmago-v3`; bump the key in `store.tsx` when saved data changes shape).
+  (`localStorage`, key `pharmago-v3`; bump `STORAGE_KEY` in `src/lib/privacy.ts` when saved data changes shape).
 - **English only.** Uzbek/Russian on the welcome screen, "Ask AI", "Call operator", voice search
   and the Emergency buttons are intentional **"Coming soon" placeholders** (they call `soon()` from
   `src/components/Shell.tsx`, which shows a toast).
@@ -48,22 +48,31 @@ src/
     saved.tsx, profile.tsx, login.tsx, emergency.tsx, admin.tsx (stock + drone fleet)
   components/        Shell (header, bottom nav, Logo, PageTitle, Stars, soon()),
                      MedicineCard, MedicineImage (photo or generated box), Pharmacy (logo,
-                     stars, Contact toast), HealthWarning, SearchBar, ui/ (shadcn)
+                     stars, Contact toast), HealthWarning, Privacy (consent checkbox,
+                     Delete my data), SearchBar, ui/ (shadcn)
   assets/products/   product photos
   lib/
     data.ts          mock MEDICINES, PHARMACIES, OFFERS (medicine × pharmacy: price, stock,
                      origin, dates), CONDITIONS, CATEGORIES, DELIVERY, formatSum ("35,000 sum")
     pricing.ts       bestOffer, cheapestOffer, compareOptions (sort/filter), orderTotals
     health.ts        getWarnings(medicine, conditions)
+    privacy.ts       STORAGE_KEY, consent rule, deleteMyData, removeLegacyData
     store.tsx        React context store persisted to localStorage (cart, saved, user,
-                     orders, addresses, cards, offers, drones, admin) + addToCart()
+                     orders, addresses, cards, offers, drones, admin) + addToCart(),
+                     logout(), deleteAllData()
+  routes/privacy.tsx /privacy             plain-English privacy notice
   test/              Vitest + Testing Library tests, named after user-story criteria
 docs/testing.md      user stories → acceptance criteria → tests
+docs/security.md     main privacy risk, our response, checks, limitations
 .github/workflows/   CI: npm ci, npm test, npm run build on every push to main
 ```
 
 Keep logic that can be tested (prices, sorting, warnings, totals) in `src/lib`, not in components.
 Contact buttons never use `tel:` links — demo numbers may belong to real people.
+
+**Privacy:** health conditions are only stored with consent (`user.healthConsent`; enforced in
+the store). The app must make **no requests to other hosts**: no analytics, no CDN scripts, no
+Google Fonts (fonts are self-hosted via `@fontsource`). Never store the password.
 
 ## Commands
 
