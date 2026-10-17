@@ -11,7 +11,10 @@ describe("demo data", () => {
     const seen = new Set<string>();
     for (const o of OFFERS) {
       expect(getMedicine(o.medicineId), o.medicineId).toBeDefined();
-      expect(PHARMACIES.some((p) => p.id === o.pharmacyId), o.pharmacyId).toBe(true);
+      expect(
+        PHARMACIES.some((p) => p.id === o.pharmacyId),
+        o.pharmacyId,
+      ).toBe(true);
       const key = `${o.pharmacyId}:${o.medicineId}`;
       expect(seen.has(key), key).toBe(false);
       seen.add(key);
@@ -27,7 +30,13 @@ describe("demo data", () => {
 
   it("matches the design's Fanigan offer at Horoshiy Pharm", () => {
     const o = OFFERS.find((x) => x.medicineId === "fanigan" && x.pharmacyId === "horoshiy");
-    expect(o).toMatchObject({ price: 35000, country: "India", manufacturer: "Kusum Healthcare Pvt. Ltd.", made: "12/01/24", expiry: "11/03/27" });
+    expect(o).toMatchObject({
+      price: 35000,
+      country: "India",
+      manufacturer: "Kusum Healthcare Pvt. Ltd.",
+      made: "12/01/24",
+      expiry: "11/03/27",
+    });
   });
 
   it("formats prices in sum", () => {

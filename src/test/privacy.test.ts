@@ -1,7 +1,13 @@
 // Privacy rules for health data (see docs/security.md).
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { conditionsToSave, deleteMyData, removeLegacyData, sanitizeUser, STORAGE_KEY } from "@/lib/privacy";
+import {
+  conditionsToSave,
+  deleteMyData,
+  removeLegacyData,
+  sanitizeUser,
+  STORAGE_KEY,
+} from "@/lib/privacy";
 
 describe("consent rule", () => {
   it("does not save health conditions without consent", () => {
@@ -18,7 +24,12 @@ describe("consent rule", () => {
   });
 
   it("keeps conditions for a user who gave consent", () => {
-    const user = { name: "Test", phone: "+998", conditions: ["diabetes" as const], healthConsent: true };
+    const user = {
+      name: "Test",
+      phone: "+998",
+      conditions: ["diabetes" as const],
+      healthConsent: true,
+    };
     expect(sanitizeUser(user).conditions).toEqual(["diabetes"]);
   });
 });

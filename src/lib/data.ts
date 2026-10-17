@@ -9,14 +9,7 @@ import ibuprofenImg from "@/assets/products/ibuprofen.png";
 import vitaminCImg from "@/assets/products/vitamin-c.png";
 
 export type Condition =
-  | "diabetes"
-  | "hypertension"
-  | "pregnancy"
-  | "kidney"
-  | "liver"
-  | "ulcer"
-  | "asthma"
-  | "heart";
+  "diabetes" | "hypertension" | "pregnancy" | "kidney" | "liver" | "ulcer" | "asthma" | "heart";
 
 export const CONDITIONS: { id: Condition; label: string }[] = [
   { id: "diabetes", label: "Diabetes" },
@@ -86,15 +79,22 @@ export const MEDICINES: Medicine[] = [
     antibiotic: false,
     prescription: false,
     age: "18+ years",
-    howTo: "1 tablet 2–3 times a day after food. Do not take for more than 5 days without a doctor.",
+    howTo:
+      "1 tablet 2–3 times a day after food. Do not take for more than 5 days without a doctor.",
     annotation:
       "Fanigan combines Diclofenac sodium and Paracetamol. It is a non-steroidal anti-inflammatory drug (NSAID) that relieves pain, reduces inflammation and lowers fever. Take after food with a full glass of water.",
     conflicts: [
       { condition: "ulcer", reason: "Diclofenac can irritate the stomach and cause bleeding." },
       { condition: "kidney", reason: "NSAIDs such as diclofenac can worsen kidney function." },
-      { condition: "liver", reason: "Paracetamol and diclofenac can damage the liver in people with liver disease." },
+      {
+        condition: "liver",
+        reason: "Paracetamol and diclofenac can damage the liver in people with liver disease.",
+      },
       { condition: "heart", reason: "Diclofenac increases the risk of heart attack and stroke." },
-      { condition: "pregnancy", reason: "NSAIDs are not recommended in pregnancy, especially the third trimester." },
+      {
+        condition: "pregnancy",
+        reason: "NSAIDs are not recommended in pregnancy, especially the third trimester.",
+      },
       { condition: "asthma", reason: "NSAIDs may trigger asthma attacks." },
     ],
   },
@@ -138,7 +138,8 @@ export const MEDICINES: Medicine[] = [
     antibiotic: false,
     prescription: false,
     age: "3+ years (dose by weight)",
-    howTo: "Use the measuring cup. Adults: 10–20 ml up to 3 times a day after food. Children: dose by weight.",
+    howTo:
+      "Use the measuring cup. Adults: 10–20 ml up to 3 times a day after food. Children: dose by weight.",
     annotation: "Ibuprofen syrup that lowers fever and relieves pain. The syrup contains sugar.",
     conflicts: [
       { condition: "diabetes", reason: "The syrup contains sugar." },
@@ -162,10 +163,16 @@ export const MEDICINES: Medicine[] = [
     antibiotic: false,
     prescription: false,
     age: "12+ years",
-    howTo: "1 capsule a day in the morning on an empty stomach, for 10 days a month, 3 months in a row.",
+    howTo:
+      "1 capsule a day in the morning on an empty stomach, for 10 days a month, 3 months in a row.",
     annotation:
       "Strengthens the immune system and helps prevent repeated infections of the airways (bronchitis, sore throat, sinusitis).",
-    conflicts: [{ condition: "pregnancy", reason: "Not recommended in pregnancy: there is not enough safety data." }],
+    conflicts: [
+      {
+        condition: "pregnancy",
+        reason: "Not recommended in pregnancy: there is not enough safety data.",
+      },
+    ],
   },
   {
     id: "immunoaktiv",
@@ -183,7 +190,8 @@ export const MEDICINES: Medicine[] = [
     prescription: false,
     age: "18+ years",
     howTo: "1 tablet a day with a meal and a glass of water.",
-    annotation: "Multivitamin with vitamins C, D3 and zinc to support the immune system. Dietary supplement.",
+    annotation:
+      "Multivitamin with vitamins C, D3 and zinc to support the immune system. Dietary supplement.",
     conflicts: [],
   },
   {
@@ -205,7 +213,12 @@ export const MEDICINES: Medicine[] = [
     howTo: "1–2 tablets every 4–6 hours after food. Max 8 tablets a day.",
     annotation:
       "Paracetamol relieves mild to moderate pain and reduces fever. Do not combine with other paracetamol-containing products. Avoid alcohol.",
-    conflicts: [{ condition: "liver", reason: "Paracetamol can damage the liver in people with liver disease." }],
+    conflicts: [
+      {
+        condition: "liver",
+        reason: "Paracetamol can damage the liver in people with liver disease.",
+      },
+    ],
   },
   {
     id: "teraflu",
@@ -226,10 +239,14 @@ export const MEDICINES: Medicine[] = [
     prescription: false,
     age: "12+ years",
     howTo: "Dissolve 1 sachet in hot water. Up to 3 times a day.",
-    annotation: "Relieves symptoms of cold and flu: fever, headache, runny nose. Each sachet contains sugar.",
+    annotation:
+      "Relieves symptoms of cold and flu: fever, headache, runny nose. Each sachet contains sugar.",
     conflicts: [
       { condition: "diabetes", reason: "Teraflu contains about 11 g of sugar per sachet." },
-      { condition: "hypertension", reason: "Contains phenylephrine, which can raise blood pressure." },
+      {
+        condition: "hypertension",
+        reason: "Contains phenylephrine, which can raise blood pressure.",
+      },
     ],
   },
   {
@@ -253,7 +270,10 @@ export const MEDICINES: Medicine[] = [
     conflicts: [
       { condition: "ulcer", reason: "Ibuprofen can irritate the stomach and cause bleeding." },
       { condition: "asthma", reason: "May trigger asthma attacks in sensitive people." },
-      { condition: "pregnancy", reason: "Not recommended in pregnancy, especially the third trimester." },
+      {
+        condition: "pregnancy",
+        reason: "Not recommended in pregnancy, especially the third trimester.",
+      },
     ],
   },
   {
@@ -291,7 +311,8 @@ export const MEDICINES: Medicine[] = [
     prescription: true,
     age: "All ages (dose by weight)",
     howTo: "1 capsule 3 times a day for 7 days, as prescribed by your doctor.",
-    annotation: "Antibiotic for bacterial infections. Complete the full course. Not effective against viruses.",
+    annotation:
+      "Antibiotic for bacterial infections. Complete the full course. Not effective against viruses.",
     conflicts: [{ condition: "kidney", reason: "Requires dose adjustment in kidney disease." }],
   },
   {
@@ -312,7 +333,9 @@ export const MEDICINES: Medicine[] = [
     age: "18+ years",
     howTo: "1 tablet a day with a meal.",
     annotation: "Supports the immune system. Dietary supplement.",
-    conflicts: [{ condition: "kidney", reason: "High doses of vitamin C may cause kidney stones." }],
+    conflicts: [
+      { condition: "kidney", reason: "High doses of vitamin C may cause kidney stones." },
+    ],
   },
   {
     id: "omeprazole",
@@ -376,12 +399,102 @@ export type Pharmacy = {
 
 // Demo pharmacies. The first three are from the Figma design; the rest are fictional.
 export const PHARMACIES: Pharmacy[] = [
-  { id: "horoshiy", name: "Horoshiy Pharm", tagline: "Discounts on best deals", rating: 4.5, address: "Durmon Yo'li 35, Tashkent", distanceKm: 4.5, phone: "+998 99 999 88 77", deliveryMin: 15, freeDelivery: true, deliveryPrice: 0, color: "#1f9d6b", open247: false, x: 25, y: 30 },
-  { id: "algo", name: "Algo Pharm", tagline: "Free delivery", rating: 4.5, address: "Alisher Navoiy 12, Tashkent", distanceKm: 4.7, phone: "+998 91 111 87 77", deliveryMin: 20, freeDelivery: true, deliveryPrice: 0, color: "#2563eb", open247: false, x: 72, y: 25 },
-  { id: "fomeks", name: "Fomeks Pharm", tagline: "Discounts on best deals", rating: 4.4, address: "Amir Temur 2, Tashkent", distanceKm: 4.8, phone: "+998 94 959 78 77", deliveryMin: 24, freeDelivery: true, deliveryPrice: 0, color: "#c2410c", open247: false, x: 80, y: 75 },
-  { id: "shifo", name: "Shifo Pharm", tagline: "Care close to home", rating: 4.7, address: "Chilonzor 9, Tashkent", distanceKm: 1.2, phone: "+998 90 312 45 67", deliveryMin: 30, freeDelivery: false, deliveryPrice: 10000, color: "#7c3aed", open247: false, x: 45, y: 93 },
-  { id: "soglom", name: "Sog'lom Plus", tagline: "Everyday low prices", rating: 4.2, address: "Yunusobod 4, Tashkent", distanceKm: 2.6, phone: "+998 93 540 21 09", deliveryMin: 35, freeDelivery: false, deliveryPrice: 8000, color: "#0f766e", open247: false, x: 60, y: 42 },
-  { id: "medline", name: "MedLine 24/7", tagline: "Open day and night", rating: 4.6, address: "Mirzo Ulug'bek 56, Tashkent", distanceKm: 3.3, phone: "+998 97 700 24 07", deliveryMin: 25, freeDelivery: false, deliveryPrice: 12000, color: "#be123c", open247: true, x: 18, y: 78 },
+  {
+    id: "horoshiy",
+    name: "Horoshiy Pharm",
+    tagline: "Discounts on best deals",
+    rating: 4.5,
+    address: "Durmon Yo'li 35, Tashkent",
+    distanceKm: 4.5,
+    phone: "+998 99 999 88 77",
+    deliveryMin: 15,
+    freeDelivery: true,
+    deliveryPrice: 0,
+    color: "#1f9d6b",
+    open247: false,
+    x: 25,
+    y: 30,
+  },
+  {
+    id: "algo",
+    name: "Algo Pharm",
+    tagline: "Free delivery",
+    rating: 4.5,
+    address: "Alisher Navoiy 12, Tashkent",
+    distanceKm: 4.7,
+    phone: "+998 91 111 87 77",
+    deliveryMin: 20,
+    freeDelivery: true,
+    deliveryPrice: 0,
+    color: "#2563eb",
+    open247: false,
+    x: 72,
+    y: 25,
+  },
+  {
+    id: "fomeks",
+    name: "Fomeks Pharm",
+    tagline: "Discounts on best deals",
+    rating: 4.4,
+    address: "Amir Temur 2, Tashkent",
+    distanceKm: 4.8,
+    phone: "+998 94 959 78 77",
+    deliveryMin: 24,
+    freeDelivery: true,
+    deliveryPrice: 0,
+    color: "#c2410c",
+    open247: false,
+    x: 80,
+    y: 75,
+  },
+  {
+    id: "shifo",
+    name: "Shifo Pharm",
+    tagline: "Care close to home",
+    rating: 4.7,
+    address: "Chilonzor 9, Tashkent",
+    distanceKm: 1.2,
+    phone: "+998 90 312 45 67",
+    deliveryMin: 30,
+    freeDelivery: false,
+    deliveryPrice: 10000,
+    color: "#7c3aed",
+    open247: false,
+    x: 45,
+    y: 93,
+  },
+  {
+    id: "soglom",
+    name: "Sog'lom Plus",
+    tagline: "Everyday low prices",
+    rating: 4.2,
+    address: "Yunusobod 4, Tashkent",
+    distanceKm: 2.6,
+    phone: "+998 93 540 21 09",
+    deliveryMin: 35,
+    freeDelivery: false,
+    deliveryPrice: 8000,
+    color: "#0f766e",
+    open247: false,
+    x: 62,
+    y: 45,
+  },
+  {
+    id: "medline",
+    name: "MedLine 24/7",
+    tagline: "Open day and night",
+    rating: 4.6,
+    address: "Mirzo Ulug'bek 56, Tashkent",
+    distanceKm: 3.3,
+    phone: "+998 97 700 24 07",
+    deliveryMin: 25,
+    freeDelivery: false,
+    deliveryPrice: 12000,
+    color: "#be123c",
+    open247: true,
+    x: 18,
+    y: 70,
+  },
 ];
 
 // One pharmacy selling one medicine. price is for the medicine's first pack; qty is units in stock.
@@ -409,18 +522,81 @@ const offer = (
 ): Offer => ({ pharmacyId, medicineId, price, qty, country, manufacturer, made, expiry });
 
 export const OFFERS: Offer[] = [
-  offer("horoshiy", "fanigan", 35000, 40, "India", "Kusum Healthcare Pvt. Ltd.", "12/01/24", "11/03/27"),
+  offer(
+    "horoshiy",
+    "fanigan",
+    35000,
+    40,
+    "India",
+    "Kusum Healthcare Pvt. Ltd.",
+    "12/01/24",
+    "11/03/27",
+  ),
   offer("algo", "fanigan", 38500, 25, "Germany", "Merck Healthcare", "05/06/25", "05/06/28"),
   offer("fomeks", "fanigan", 37000, 18, "Russia", "Sanofi", "20/09/25", "20/09/28"),
-  offer("shifo", "fanigan", 36500, 12, "India", "Kusum Healthcare Pvt. Ltd.", "02/02/26", "02/02/29"),
+  offer(
+    "shifo",
+    "fanigan",
+    36500,
+    12,
+    "India",
+    "Kusum Healthcare Pvt. Ltd.",
+    "02/02/26",
+    "02/02/29",
+  ),
 
-  offer("horoshiy", "fanigolin", 28000, 30, "India", "Kusum Healthcare Pvt. Ltd.", "10/03/25", "10/03/28"),
-  offer("algo", "fanigolin", 31000, 22, "India", "Kusum Healthcare Pvt. Ltd.", "15/07/25", "15/07/28"),
-  offer("soglom", "fanigolin", 26500, 15, "India", "Kusum Healthcare Pvt. Ltd.", "01/11/25", "01/11/28"),
+  offer(
+    "horoshiy",
+    "fanigolin",
+    28000,
+    30,
+    "India",
+    "Kusum Healthcare Pvt. Ltd.",
+    "10/03/25",
+    "10/03/28",
+  ),
+  offer(
+    "algo",
+    "fanigolin",
+    31000,
+    22,
+    "India",
+    "Kusum Healthcare Pvt. Ltd.",
+    "15/07/25",
+    "15/07/28",
+  ),
+  offer(
+    "soglom",
+    "fanigolin",
+    26500,
+    15,
+    "India",
+    "Kusum Healthcare Pvt. Ltd.",
+    "01/11/25",
+    "01/11/28",
+  ),
 
-  offer("horoshiy", "fanibrufen", 42000, 20, "India", "Kusum Healthcare Pvt. Ltd.", "04/04/25", "04/04/27"),
+  offer(
+    "horoshiy",
+    "fanibrufen",
+    42000,
+    20,
+    "India",
+    "Kusum Healthcare Pvt. Ltd.",
+    "04/04/25",
+    "04/04/27",
+  ),
   offer("fomeks", "fanibrufen", 39500, 14, "Russia", "Pharmstandard", "18/08/25", "18/08/27"),
-  offer("medline", "fanibrufen", 44000, 9, "India", "Kusum Healthcare Pvt. Ltd.", "03/12/25", "03/12/27"),
+  offer(
+    "medline",
+    "fanibrufen",
+    44000,
+    9,
+    "India",
+    "Kusum Healthcare Pvt. Ltd.",
+    "03/12/25",
+    "03/12/27",
+  ),
 
   offer("algo", "bronho-munal", 95000, 10, "Slovenia", "Lek (Sandoz)", "11/02/25", "11/02/30"),
   offer("fomeks", "bronho-munal", 89000, 8, "Slovenia", "Lek (Sandoz)", "22/05/25", "22/05/30"),
@@ -432,16 +608,61 @@ export const OFFERS: Offer[] = [
   offer("soglom", "immunoaktiv", 49000, 28, "Germany", "Queisser Pharma", "30/10/25", "30/10/28"),
 
   offer("horoshiy", "paracetamol", 12500, 60, "India", "Micro Labs", "03/03/26", "03/03/29"),
-  offer("algo", "paracetamol", 11800, 45, "Uzbekistan", "Jurabek Laboratories", "15/01/26", "15/01/29"),
+  offer(
+    "algo",
+    "paracetamol",
+    11800,
+    45,
+    "Uzbekistan",
+    "Jurabek Laboratories",
+    "15/01/26",
+    "15/01/29",
+  ),
   offer("fomeks", "paracetamol", 13200, 50, "Russia", "Pharmstandard", "20/02/26", "20/02/29"),
   offer("shifo", "paracetamol", 11500, 30, "India", "Micro Labs", "07/04/26", "07/04/29"),
-  offer("soglom", "paracetamol", 10900, 70, "Uzbekistan", "Jurabek Laboratories", "25/03/26", "25/03/29"),
+  offer(
+    "soglom",
+    "paracetamol",
+    10900,
+    70,
+    "Uzbekistan",
+    "Jurabek Laboratories",
+    "25/03/26",
+    "25/03/29",
+  ),
   offer("medline", "paracetamol", 13900, 40, "India", "Micro Labs", "11/05/26", "11/05/29"),
 
-  offer("horoshiy", "teraflu", 69000, 24, "Switzerland", "GSK Consumer Healthcare", "10/01/26", "10/01/28"),
+  offer(
+    "horoshiy",
+    "teraflu",
+    69000,
+    24,
+    "Switzerland",
+    "GSK Consumer Healthcare",
+    "10/01/26",
+    "10/01/28",
+  ),
   offer("algo", "teraflu", 72000, 16, "USA", "GSK Consumer Healthcare", "05/12/25", "05/12/27"),
-  offer("soglom", "teraflu", 66000, 20, "Poland", "GSK Consumer Healthcare", "18/02/26", "18/02/28"),
-  offer("medline", "teraflu", 74500, 12, "Switzerland", "GSK Consumer Healthcare", "22/03/26", "22/03/28"),
+  offer(
+    "soglom",
+    "teraflu",
+    66000,
+    20,
+    "Poland",
+    "GSK Consumer Healthcare",
+    "18/02/26",
+    "18/02/28",
+  ),
+  offer(
+    "medline",
+    "teraflu",
+    74500,
+    12,
+    "Switzerland",
+    "GSK Consumer Healthcare",
+    "22/03/26",
+    "22/03/28",
+  ),
 
   offer("algo", "ibuprofen", 18500, 40, "Germany", "Berlin-Chemie", "05/05/26", "05/05/29"),
   offer("fomeks", "ibuprofen", 16900, 35, "Russia", "Pharmstandard", "14/03/26", "14/03/29"),
@@ -483,14 +704,17 @@ export const offersFor = (offers: Offer[], medicineId: string) => {
     .sort((a, b) => Number(b.qty > 0) - Number(a.qty > 0) || order(a) - order(b));
 };
 
-export const formatSum = (n: number) => `${(Math.round(n / 100) * 100).toLocaleString("en-US")} sum`;
+export const formatSum = (n: number) =>
+  `${(Math.round(n / 100) * 100).toLocaleString("en-US")} sum`;
 
 export const DELIVERY = {
   drone: { label: "Drone", time: "10–15 min", price: 15000 },
   courier: { label: "Courier", time: "20–30 min", price: 10000 },
 } as const;
 
-export const deliveryLabel = (p: Pharmacy) => (p.freeDelivery ? "Free delivery" : `Delivery ${formatSum(p.deliveryPrice)}`);
+export const deliveryLabel = (p: Pharmacy) =>
+  p.freeDelivery ? "Free delivery" : `Delivery ${formatSum(p.deliveryPrice)}`;
 
 // "Fanigan 200 mg" → "Fanigan"; the strength is shown separately.
-export const brandName = (m: Medicine) => (m.strength ? m.name.replace(m.strength, "").trim() : m.name);
+export const brandName = (m: Medicine) =>
+  m.strength ? m.name.replace(m.strength, "").trim() : m.name;

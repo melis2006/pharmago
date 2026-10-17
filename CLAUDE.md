@@ -81,8 +81,12 @@ npm install        # .npmrc sets legacy-peer-deps=true (avoids npm "edgesOut" cr
 npm run dev        # dev server on http://localhost:8080
 npm run build      # production build into .output/
 npm test           # vitest run
-npm run lint       # eslint
+npm run lint       # eslint + prettier, must have 0 errors
+npm run format     # prettier --write . (run before committing)
 ```
+
+`.gitattributes` forces LF line endings (also on Windows). Tap targets must be at least 48px
+(`min-h-12`); do not use `size="sm"` buttons for user-facing actions.
 
 ## Rules
 

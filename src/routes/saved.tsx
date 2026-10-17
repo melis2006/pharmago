@@ -18,9 +18,18 @@ function Saved() {
     <Shell>
       <PageTitle>Saved</PageTitle>
       {list.length === 0 ? (
-        <div className="card-soft p-10 text-center"><p className="text-xl">Tap the heart on any medicine to save it here.</p><Button asChild size="lg" className="mt-5"><Link to="/home">Browse medicines</Link></Button></div>
+        <div className="card-soft p-10 text-center">
+          <p className="text-xl">Tap the heart on any medicine to save it here.</p>
+          <Button asChild size="lg" className="mt-5">
+            <Link to="/home">Browse medicines</Link>
+          </Button>
+        </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{list.map((m) => <MedicineCard key={m.id} m={m} />)}</div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {list.map((m) => (
+            <MedicineCard key={m.id} m={m} />
+          ))}
+        </div>
       )}
     </Shell>
   );

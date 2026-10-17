@@ -115,7 +115,9 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
   }
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     font-family: var(--font-display);
   }
 }
@@ -132,6 +134,12 @@
 }
 
 @keyframes fly {
-  0% { left: 8%; top: 70%; }
-  100% { left: 82%; top: 18%; }
+  0% {
+    left: 8%;
+    top: 70%;
+  }
+  100% {
+    left: 82%;
+    top: 18%;
+  }
 }

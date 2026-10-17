@@ -11,13 +11,21 @@ export function conditionsToSave(conditions: readonly Condition[], consent: bool
 }
 
 // Applies the consent rule to a saved user (e.g. data saved before consent existed).
-export function sanitizeUser<U extends { conditions: Condition[]; healthConsent?: boolean }>(user: U): U & { healthConsent: boolean } {
+export function sanitizeUser<U extends { conditions: Condition[]; healthConsent?: boolean }>(
+  user: U,
+): U & { healthConsent: boolean } {
   const healthConsent = user.healthConsent === true;
-  return { ...user, healthConsent, conditions: conditionsToSave(user.conditions ?? [], healthConsent) };
+  return {
+    ...user,
+    healthConsent,
+    conditions: conditionsToSave(user.conditions ?? [], healthConsent),
+  };
 }
 
 const ourKeys = (storage: Storage) =>
-  Array.from({ length: storage.length }, (_, i) => storage.key(i)).filter((k): k is string => k?.startsWith(STORAGE_PREFIX) ?? false);
+  Array.from({ length: storage.length }, (_, i) => storage.key(i)).filter(
+    (k): k is string => k?.startsWith(STORAGE_PREFIX) ?? false,
+  );
 
 // "Delete my data": removes every key PharmaGO stored in this browser. Returns the removed keys.
 export function deleteMyData(storage: Storage): string[] {

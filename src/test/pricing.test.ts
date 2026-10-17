@@ -7,7 +7,9 @@ import { bestOffer, scoreOffers } from "@/lib/pricing";
 describe("best match scoring", () => {
   it("lets price outweigh distance", () => {
     // Shifo is the closest Fanigan seller; making it far cheaper must make it the best match.
-    const offers: Offer[] = OFFERS.map((o) => (o.medicineId === "fanigan" && o.pharmacyId === "shifo" ? { ...o, price: 20000 } : o));
+    const offers: Offer[] = OFFERS.map((o) =>
+      o.medicineId === "fanigan" && o.pharmacyId === "shifo" ? { ...o, price: 20000 } : o,
+    );
     expect(bestOffer(offers, "fanigan")?.pharmacyId).toBe("shifo");
   });
 

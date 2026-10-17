@@ -21,7 +21,9 @@ export function MedicineImage({
   className?: string;
 }) {
   return (
-    <div className={`flex items-center justify-center overflow-hidden bg-white ${SIZES[size]} ${className}`}>
+    <div
+      className={`flex items-center justify-center overflow-hidden bg-white ${SIZES[size]} ${className}`}
+    >
       {m.image ? (
         <img
           src={m.image}
@@ -54,18 +56,53 @@ export function MedicineBox({ m, label }: { m: Medicine; label?: string | undefi
     >
       <ellipse cx="125" cy="160" rx="92" ry="9" fill="#000" opacity="0.08" />
       {/* top and right side give the box some depth */}
-      <polygon points="30,42 192,42 214,26 52,26" fill="#f1f4f3" stroke={edge} strokeWidth="1.5" strokeLinejoin="round" />
-      <polygon points="192,42 214,26 214,136 192,152" fill="#e2e8e6" stroke={edge} strokeWidth="1.5" strokeLinejoin="round" />
+      <polygon
+        points="30,42 192,42 214,26 52,26"
+        fill="#f1f4f3"
+        stroke={edge}
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <polygon
+        points="192,42 214,26 214,136 192,152"
+        fill="#e2e8e6"
+        stroke={edge}
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
       <polygon points="192,100 214,84 214,106 192,122" fill={m.color} opacity="0.85" />
       <rect x="30" y="42" width="162" height="110" fill="#fff" stroke={edge} strokeWidth="1.5" />
       <rect x="30" y="100" width="162" height="22" fill={m.color} />
-      <text x="111" y="78" textAnchor="middle" fontWeight="700" fontSize={nameSize} fill={ink} style={{ fontFamily: "var(--font-display)" }}>
+      <text
+        x="111"
+        y="78"
+        textAnchor="middle"
+        fontWeight="700"
+        fontSize={nameSize}
+        fill={ink}
+        style={{ fontFamily: "var(--font-display)" }}
+      >
         {name}
       </text>
-      <text x="111" y="116" textAnchor="middle" fontWeight="700" fontSize="13" fill="#fff" style={{ fontFamily: "var(--font-sans)" }}>
+      <text
+        x="111"
+        y="116"
+        textAnchor="middle"
+        fontWeight="700"
+        fontSize="13"
+        fill="#fff"
+        style={{ fontFamily: "var(--font-sans)" }}
+      >
         {m.strength ?? m.form}
       </text>
-      <text x="111" y="141" textAnchor="middle" fontSize="11" fill="#5b6b67" style={{ fontFamily: "var(--font-sans)" }}>
+      <text
+        x="111"
+        y="141"
+        textAnchor="middle"
+        fontSize="11"
+        fill="#5b6b67"
+        style={{ fontFamily: "var(--font-sans)" }}
+      >
         {m.packs[0]?.label}
       </text>
     </svg>

@@ -50,18 +50,28 @@ export type OptionsFilter = "Free delivery" | "24/7";
 export type OptionRow = { o: Offer; p: Pharmacy };
 
 // Out-of-stock offers stay in the list (so the user sees them) but always come last.
-export function compareOptions(offers: Offer[], medicineId: string, sort: OptionsSort, filters: readonly OptionsFilter[] = []): OptionRow[] {
+export function compareOptions(
+  offers: Offer[],
+  medicineId: string,
+  sort: OptionsSort,
+  filters: readonly OptionsFilter[] = [],
+): OptionRow[] {
   let rows = offersFor(offers, medicineId).map((o) => ({ o, p: getPharmacy(o.pharmacyId) }));
   if (filters.includes("Free delivery")) rows = rows.filter((r) => r.p.freeDelivery);
   if (filters.includes("24/7")) rows = rows.filter((r) => r.p.open247);
   return rows.sort(
-    (a, b) => Number(b.o.qty > 0) - Number(a.o.qty > 0) || (sort === "Cheapest" ? a.o.price - b.o.price : a.p.distanceKm - b.p.distanceKm),
+    (a, b) =>
+      Number(b.o.qty > 0) - Number(a.o.qty > 0) ||
+      (sort === "Cheapest" ? a.o.price - b.o.price : a.p.distanceKm - b.p.distanceKm),
   );
 }
 
 // Cart and checkout totals. There is no delivery fee for an empty order.
 export type DeliveryMethod = keyof typeof DELIVERY;
-export function orderTotals(items: readonly { unitPrice: number; qty: number }[], method: DeliveryMethod) {
+export function orderTotals(
+  items: readonly { unitPrice: number; qty: number }[],
+  method: DeliveryMethod,
+) {
   const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.qty, 0);
   const delivery = items.length > 0 ? DELIVERY[method].price : 0;
   return { subtotal, delivery, total: subtotal + delivery };

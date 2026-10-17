@@ -8,12 +8,12 @@ directly as evidence.
 The logic under test lives in plain functions, not inside page components, and the pages call
 these same functions:
 
-| Function | File | Used by |
-| --- | --- | --- |
-| `compareOptions(offers, medicineId, sort, filters)` | `src/lib/pricing.ts` | Options page (`/compare/:id`) |
+| Function                                            | File                 | Used by                                           |
+| --------------------------------------------------- | -------------------- | ------------------------------------------------- |
+| `compareOptions(offers, medicineId, sort, filters)` | `src/lib/pricing.ts` | Options page (`/compare/:id`)                     |
 | `bestOffer(offers, medicineId)`, `cheapestOffer(…)` | `src/lib/pricing.ts` | medicine page, medicine cards, "Best price" badge |
-| `orderTotals(items, method)` | `src/lib/pricing.ts` | cart, checkout |
-| `getWarnings(medicine, conditions)` | `src/lib/health.ts` | `HealthWarning` component on the medicine page |
+| `orderTotals(items, method)`                        | `src/lib/pricing.ts` | cart, checkout                                    |
+| `getWarnings(medicine, conditions)`                 | `src/lib/health.ts`  | `HealthWarning` component on the medicine page    |
 
 ## User stories → acceptance criteria → tests
 
@@ -23,39 +23,39 @@ can buy it at the lowest price.
 **US2** — As a user with diabetes, I want to be warned about medicines that are not safe for me,
 so that I don't buy the wrong one.
 
-| Story | Acceptance criterion | Test (file › name) | Status |
-| --- | --- | --- | --- |
-| US1 | **AC1** "Browse other options" shows at least 3 pharmacies with their prices for every medicine | `price-comparison.test.ts` › US1-AC1: every medicine is offered by at least 3 pharmacies, each with a price | ✅ Pass |
-| US1 | **AC2** With "Cheapest" selected, the pharmacy with the lowest price is shown first | `price-comparison.test.ts` › US1-AC2: with Cheapest selected, the lowest price is shown first | ✅ Pass |
-| US1 | **AC2** (example from the design) | `price-comparison.test.ts` › US1-AC2: cheapest offer is first for Fanigan (Horoshiy Pharm, 35,000 sum) | ✅ Pass |
-| US1 | **AC3** For Fanigan the best match pharmacy is Horoshiy Pharm | `price-comparison.test.ts` › US1-AC3: the best match pharmacy for Fanigan is Horoshiy Pharm | ✅ Pass |
-| US2 | **AC1** With "Diabetes" ticked, Teraflu shows "Not recommended for you" with the reason | `health.test.ts` › US2-AC1: with Diabetes ticked, Teraflu is flagged with the reason | ✅ Pass |
-| US2 | **AC1** (rendered UI) | `health-warning.test.tsx` › US2-AC1: shows 'Not recommended for you' with the reason for Teraflu when Diabetes is ticked | ✅ Pass |
-| US2 | **AC2** With no conditions ticked, the warning is not shown | `health.test.ts` › US2-AC2: with no conditions ticked, Teraflu is not flagged | ✅ Pass |
-| US2 | **AC2** (rendered UI) | `health-warning.test.tsx` › US2-AC2: shows no warning for Teraflu when no conditions are ticked | ✅ Pass |
+| Story | Acceptance criterion                                                                            | Test (file › name)                                                                                                       | Status  |
+| ----- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------- |
+| US1   | **AC1** "Browse other options" shows at least 3 pharmacies with their prices for every medicine | `price-comparison.test.ts` › US1-AC1: every medicine is offered by at least 3 pharmacies, each with a price              | ✅ Pass |
+| US1   | **AC2** With "Cheapest" selected, the pharmacy with the lowest price is shown first             | `price-comparison.test.ts` › US1-AC2: with Cheapest selected, the lowest price is shown first                            | ✅ Pass |
+| US1   | **AC2** (example from the design)                                                               | `price-comparison.test.ts` › US1-AC2: cheapest offer is first for Fanigan (Horoshiy Pharm, 35,000 sum)                   | ✅ Pass |
+| US1   | **AC3** For Fanigan the best match pharmacy is Horoshiy Pharm                                   | `price-comparison.test.ts` › US1-AC3: the best match pharmacy for Fanigan is Horoshiy Pharm                              | ✅ Pass |
+| US2   | **AC1** With "Diabetes" ticked, Teraflu shows "Not recommended for you" with the reason         | `health.test.ts` › US2-AC1: with Diabetes ticked, Teraflu is flagged with the reason                                     | ✅ Pass |
+| US2   | **AC1** (rendered UI)                                                                           | `health-warning.test.tsx` › US2-AC1: shows 'Not recommended for you' with the reason for Teraflu when Diabetes is ticked | ✅ Pass |
+| US2   | **AC2** With no conditions ticked, the warning is not shown                                     | `health.test.ts` › US2-AC2: with no conditions ticked, Teraflu is not flagged                                            | ✅ Pass |
+| US2   | **AC2** (rendered UI)                                                                           | `health-warning.test.tsx` › US2-AC2: shows no warning for Teraflu when no conditions are ticked                          | ✅ Pass |
 
 ### Supporting tests
 
-| Area | Test (file › name) | Status |
-| --- | --- | --- |
-| Out of stock | `price-comparison.test.ts` › out-of-stock offers are excluded from best match and cheapest | ✅ Pass |
-| Out of stock | `price-comparison.test.ts` › out-of-stock offers are listed last on the Options page | ✅ Pass |
-| Out of stock | `price-comparison.test.ts` › returns no best match when no pharmacy has the medicine in stock | ✅ Pass |
-| Sorting | `price-comparison.test.ts` › Closest sorts pharmacies by distance | ✅ Pass |
-| Filters | `price-comparison.test.ts` › Free delivery filter keeps only pharmacies with free delivery | ✅ Pass |
-| Filters | `price-comparison.test.ts` › 24/7 filter keeps only pharmacies open 24/7 | ✅ Pass |
-| Filters | `price-comparison.test.ts` › filters combine: free delivery and 24/7 together can leave no pharmacy | ✅ Pass |
-| Totals | `price-comparison.test.ts` › adds the drone fee (15,000 sum) to the subtotal | ✅ Pass |
-| Totals | `price-comparison.test.ts` › adds the courier fee (10,000 sum) to the subtotal | ✅ Pass |
-| Totals | `price-comparison.test.ts` › charges no delivery for an empty order | ✅ Pass |
-| Health | `health.test.ts` › does not flag Teraflu for an unrelated condition (asthma) | ✅ Pass |
-| Health | `health.test.ts` › lists every matching condition when several are ticked | ✅ Pass |
-| Health | `health.test.ts` › only reports conditions the medicine conflicts with (Fanigan: ulcer, kidney, asthma but not diabetes) | ✅ Pass |
-| Best match | `pricing.test.ts` › lets price outweigh distance; sorts scores best first | ✅ Pass |
-| Demo data | `data.test.ts` › 6 consistency checks (offers, unique prices, design values, sum format, box colours) | ✅ Pass |
-| Routing | `app-routing.test.tsx` › matches a page for / instead of falling back to not found | ✅ Pass |
-| Privacy | `privacy.test.ts` › consent rule (4 tests) and delete my data (3 tests) — see `docs/security.md` | ✅ Pass |
-| Privacy | `privacy-store.test.tsx` › consent, logout and delete my data checked against the real store and `localStorage` (4 tests) | ✅ Pass |
+| Area         | Test (file › name)                                                                                                        | Status  |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- | ------- |
+| Out of stock | `price-comparison.test.ts` › out-of-stock offers are excluded from best match and cheapest                                | ✅ Pass |
+| Out of stock | `price-comparison.test.ts` › out-of-stock offers are listed last on the Options page                                      | ✅ Pass |
+| Out of stock | `price-comparison.test.ts` › returns no best match when no pharmacy has the medicine in stock                             | ✅ Pass |
+| Sorting      | `price-comparison.test.ts` › Closest sorts pharmacies by distance                                                         | ✅ Pass |
+| Filters      | `price-comparison.test.ts` › Free delivery filter keeps only pharmacies with free delivery                                | ✅ Pass |
+| Filters      | `price-comparison.test.ts` › 24/7 filter keeps only pharmacies open 24/7                                                  | ✅ Pass |
+| Filters      | `price-comparison.test.ts` › filters combine: free delivery and 24/7 together can leave no pharmacy                       | ✅ Pass |
+| Totals       | `price-comparison.test.ts` › adds the drone fee (15,000 sum) to the subtotal                                              | ✅ Pass |
+| Totals       | `price-comparison.test.ts` › adds the courier fee (10,000 sum) to the subtotal                                            | ✅ Pass |
+| Totals       | `price-comparison.test.ts` › charges no delivery for an empty order                                                       | ✅ Pass |
+| Health       | `health.test.ts` › does not flag Teraflu for an unrelated condition (asthma)                                              | ✅ Pass |
+| Health       | `health.test.ts` › lists every matching condition when several are ticked                                                 | ✅ Pass |
+| Health       | `health.test.ts` › only reports conditions the medicine conflicts with (Fanigan: ulcer, kidney, asthma but not diabetes)  | ✅ Pass |
+| Best match   | `pricing.test.ts` › lets price outweigh distance; sorts scores best first                                                 | ✅ Pass |
+| Demo data    | `data.test.ts` › 6 consistency checks (offers, unique prices, design values, sum format, box colours)                     | ✅ Pass |
+| Routing      | `app-routing.test.tsx` › matches a page for / instead of falling back to not found                                        | ✅ Pass |
+| Privacy      | `privacy.test.ts` › consent rule (4 tests) and delete my data (3 tests) — see `docs/security.md`                          | ✅ Pass |
+| Privacy      | `privacy-store.test.tsx` › consent, logout and delete my data checked against the real store and `localStorage` (4 tests) | ✅ Pass |
 
 **Do the tests really catch bugs?** As a check, we broke the code on purpose (reversed the
 "Cheapest" sort and switched off the health check). The US1-AC2 and US2-AC1 tests then failed,

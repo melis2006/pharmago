@@ -6,7 +6,9 @@ import { MEDICINES, OFFERS, type Offer } from "@/lib/data";
 import { bestOffer, cheapestOffer, compareOptions, orderTotals } from "@/lib/pricing";
 
 const withQty = (medicineId: string, pharmacyId: string, qty: number): Offer[] =>
-  OFFERS.map((o) => (o.medicineId === medicineId && o.pharmacyId === pharmacyId ? { ...o, qty } : o));
+  OFFERS.map((o) =>
+    o.medicineId === medicineId && o.pharmacyId === pharmacyId ? { ...o, qty } : o,
+  );
 
 describe("US1: compare the same medicine across pharmacies", () => {
   it("US1-AC1: every medicine is offered by at least 3 pharmacies, each with a price", () => {
@@ -75,7 +77,9 @@ describe("price comparison details", () => {
   });
 
   it("filters combine: free delivery and 24/7 together can leave no pharmacy", () => {
-    expect(compareOptions(OFFERS, "paracetamol", "Cheapest", ["Free delivery", "24/7"])).toEqual([]);
+    expect(compareOptions(OFFERS, "paracetamol", "Cheapest", ["Free delivery", "24/7"])).toEqual(
+      [],
+    );
   });
 });
 
@@ -90,7 +94,11 @@ describe("order totals", () => {
   });
 
   it("adds the courier fee (10,000 sum) to the subtotal", () => {
-    expect(orderTotals(items, "courier")).toEqual({ subtotal: 62800, delivery: 10000, total: 72800 });
+    expect(orderTotals(items, "courier")).toEqual({
+      subtotal: 62800,
+      delivery: 10000,
+      total: 72800,
+    });
   });
 
   it("charges no delivery for an empty order", () => {

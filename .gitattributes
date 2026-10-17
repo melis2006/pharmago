@@ -1,0 +1,12 @@
+# Always use LF line endings, also on Windows (core.autocrlf), so Prettier/ESLint agree everywhere.
+* text=auto eol=lf
+
+# Binary files: never touch line endings.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary

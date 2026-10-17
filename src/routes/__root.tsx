@@ -22,7 +22,10 @@ function NotFoundComponent() {
         <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
         <p className="mt-2 text-muted-foreground">The page you're looking for doesn't exist.</p>
         <div className="mt-6">
-          <Link to="/home" className="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-lg font-semibold text-primary-foreground">
+          <Link
+            to="/home"
+            className="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-lg font-semibold text-primary-foreground"
+          >
             Go home
           </Link>
         </div>
@@ -41,8 +44,12 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">This page didn't load</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Something went wrong. Try refreshing or head back home.</p>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+          This page didn't load
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Something went wrong. Try refreshing or head back home.
+        </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -53,7 +60,10 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
           >
             Try again
           </button>
-          <a href="/" className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground">
+          <a
+            href="/"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground"
+          >
             Go home
           </a>
         </div>
@@ -68,9 +78,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "PharmaGO — Your health, delivered" },
-      { name: "description", content: "Find and order medicines in Tashkent with fast drone or courier delivery." },
+      {
+        name: "description",
+        content: "Find and order medicines in Tashkent with fast drone or courier delivery.",
+      },
       { property: "og:title", content: "PharmaGO — Your health, delivered" },
-      { property: "og:description", content: "Find and order medicines in Tashkent with fast drone or courier delivery." },
+      {
+        property: "og:description",
+        content: "Find and order medicines in Tashkent with fast drone or courier delivery.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -106,7 +122,11 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <StoreProvider>
         <Outlet />
-        <Toaster position="top-center" richColors toastOptions={{ style: { fontSize: "1.05rem" } }} />
+        <Toaster
+          position="top-center"
+          richColors
+          toastOptions={{ style: { fontSize: "1.05rem" } }}
+        />
       </StoreProvider>
     </QueryClientProvider>
   );

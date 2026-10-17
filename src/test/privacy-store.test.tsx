@@ -31,7 +31,11 @@ describe("store privacy behaviour", () => {
 
   it("does not save health conditions when the user did not consent", async () => {
     const store = renderStore();
-    act(() => store.current!.set(() => ({ user: { name: "Test", phone: "+998", conditions: ["diabetes"], healthConsent: false } })));
+    act(() =>
+      store.current!.set(() => ({
+        user: { name: "Test", phone: "+998", conditions: ["diabetes"], healthConsent: false },
+      })),
+    );
     await waitFor(() => expect(saved()?.user?.name).toBe("Test"));
     expect(saved().user.conditions).toEqual([]);
     expect(localStorage.getItem(STORAGE_KEY)).not.toContain("diabetes");
@@ -39,13 +43,21 @@ describe("store privacy behaviour", () => {
 
   it("saves health conditions when the user consented", async () => {
     const store = renderStore();
-    act(() => store.current!.set(() => ({ user: { name: "Test", phone: "+998", conditions: ["diabetes"], healthConsent: true } })));
+    act(() =>
+      store.current!.set(() => ({
+        user: { name: "Test", phone: "+998", conditions: ["diabetes"], healthConsent: true },
+      })),
+    );
     await waitFor(() => expect(saved()?.user?.conditions).toEqual(["diabetes"]));
   });
 
   it("log out removes the health conditions from storage", async () => {
     const store = renderStore();
-    act(() => store.current!.set(() => ({ user: { name: "Test", phone: "+998", conditions: ["diabetes"], healthConsent: true } })));
+    act(() =>
+      store.current!.set(() => ({
+        user: { name: "Test", phone: "+998", conditions: ["diabetes"], healthConsent: true },
+      })),
+    );
     await waitFor(() => expect(localStorage.getItem(STORAGE_KEY)).toContain("diabetes"));
 
     act(() => store.current!.logout());
@@ -58,7 +70,9 @@ describe("store privacy behaviour", () => {
     localStorage.setItem("pharmago-v1", JSON.stringify({ user: { conditions: ["asthma"] } }));
     const store = renderStore();
     act(() => {
-      store.current!.set(() => ({ user: { name: "Test", phone: "+998", conditions: ["diabetes"], healthConsent: true } }));
+      store.current!.set(() => ({
+        user: { name: "Test", phone: "+998", conditions: ["diabetes"], healthConsent: true },
+      }));
       store.current!.set((s) => ({ saved: [...s.saved, "teraflu"] }));
     });
     await waitFor(() => expect(localStorage.getItem(STORAGE_KEY)).not.toBeNull());

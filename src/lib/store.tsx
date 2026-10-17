@@ -3,7 +3,14 @@ import { OFFERS, offersFor, type Condition, type Offer } from "./data";
 import { bestOffer as pickBestOffer } from "./pricing";
 import { deleteMyData, removeLegacyData, sanitizeUser, STORAGE_KEY } from "./privacy";
 
-export type CartItem = { key: string; medicineId: string; pharmacyId: string; pack: number; qty: number; unitPrice: number };
+export type CartItem = {
+  key: string;
+  medicineId: string;
+  pharmacyId: string;
+  pack: number;
+  qty: number;
+  unitPrice: number;
+};
 // conditions are only kept when healthConsent is true (enforced on every update).
 export type User = { name: string; phone: string; conditions: Condition[]; healthConsent: boolean };
 export type OrderStatus = "Packaged" | "On the way" | "Delivered";
@@ -18,7 +25,12 @@ export type Order = {
   rating?: number;
 };
 export type Card = { last4: string; type: string };
-export type Drone = { id: string; battery: number; status: "Idle" | "Flying" | "Charging"; rangeKm: number };
+export type Drone = {
+  id: string;
+  battery: number;
+  status: "Idle" | "Flying" | "Charging";
+  rangeKm: number;
+};
 
 type State = {
   cart: CartItem[];
@@ -90,11 +102,27 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     deleteMyData(localStorage);
     setState(initial);
   };
-  const price = (ph: string, med: string) => state.offers.find((o) => o.pharmacyId === ph && o.medicineId === med)?.price ?? 0;
+  const price = (ph: string, med: string) =>
+    state.offers.find((o) => o.pharmacyId === ph && o.medicineId === med)?.price ?? 0;
   const forMedicine = (med: string) => offersFor(state.offers, med);
   // Every medicine has at least one offer in OFFERS (checked in src/test/data.test.ts).
-  const best = (med: string) => pickBestOffer(state.offers, med) ?? forMedicine(med)[0] ?? offersFor(OFFERS, med)[0]!;
-  return <StoreCtx.Provider value={{ ...state, set, price, offersFor: forMedicine, bestOffer: best, logout, deleteAllData }}>{children}</StoreCtx.Provider>;
+  const best = (med: string) =>
+    pickBestOffer(state.offers, med) ?? forMedicine(med)[0] ?? offersFor(OFFERS, med)[0]!;
+  return (
+    <StoreCtx.Provider
+      value={{
+        ...state,
+        set,
+        price,
+        offersFor: forMedicine,
+        bestOffer: best,
+        logout,
+        deleteAllData,
+      }}
+    >
+      {children}
+    </StoreCtx.Provider>
+  );
 }
 
 export function useStore() {
@@ -108,7 +136,9 @@ export function addToCart(set: Ctx["set"], item: Omit<CartItem, "key" | "qty">, 
   set((s) => {
     const ex = s.cart.find((c) => c.key === key);
     return {
-      cart: ex ? s.cart.map((c) => (c.key === key ? { ...c, qty: c.qty + qty } : c)) : [...s.cart, { ...item, key, qty }],
+      cart: ex
+        ? s.cart.map((c) => (c.key === key ? { ...c, qty: c.qty + qty } : c))
+        : [...s.cart, { ...item, key, qty }],
     };
   });
 }
