@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CreditCard, Heart, Lock, LogOut, MapPin, Package, ShieldCheck } from "lucide-react";
+import { CreditCard, Heart, Lock, LogOut, Package, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import type { ReactNode } from "react";
 import { DeleteMyDataButton, HealthConsent } from "@/components/Privacy";
+import { SavedAddresses } from "@/components/SavedAddresses";
 import { PageTitle, Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { CONDITIONS, type Condition } from "@/lib/data";
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/profile")({
 });
 
 function Profile() {
-  const { user, addresses, cards, orders, saved, set, logout } = useStore();
+  const { user, cards, orders, saved, set, logout } = useStore();
   if (!user)
     return (
       <Shell>
@@ -79,11 +80,7 @@ function Profile() {
             })}
           </div>
         </Card>
-        <Card icon={<MapPin />} title="Saved addresses">
-          {addresses.map((a) => (
-            <p key={a}>{a}</p>
-          ))}
-        </Card>
+        <SavedAddresses />
         <Card icon={<CreditCard />} title="Payment cards">
           {cards.length ? (
             cards.map((c, i) => (
@@ -112,7 +109,9 @@ function Profile() {
         className="mt-6 w-full md:w-auto"
         onClick={() => {
           logout();
-          toast("You are logged out. Your health conditions were removed from this device.");
+          toast(
+            "You are logged out. Your health conditions and addresses were removed from this device.",
+          );
         }}
       >
         <LogOut /> Log out

@@ -3,7 +3,7 @@ import type { Condition } from "./data";
 // Everything PharmaGO saves lives in this browser's localStorage under keys starting with this
 // prefix. Bump the version when the saved data changes shape (old keys are removed on load).
 export const STORAGE_PREFIX = "pharmago";
-export const STORAGE_KEY = `${STORAGE_PREFIX}-v3`;
+export const STORAGE_KEY = `${STORAGE_PREFIX}-v4`;
 
 // Consent rule: health conditions are only kept if the user agreed to store them.
 export function conditionsToSave(conditions: readonly Condition[], consent: boolean): Condition[] {

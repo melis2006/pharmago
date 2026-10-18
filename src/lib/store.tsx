@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import type { Address } from "./address";
 import { OFFERS, offersFor, type Condition, type Offer } from "./data";
 import { bestOffer as pickBestOffer } from "./pricing";
 import { deleteMyData, removeLegacyData, sanitizeUser, STORAGE_KEY } from "./privacy";
@@ -38,7 +39,7 @@ type State = {
   recent: string[];
   user: User | null;
   orders: Order[];
-  addresses: string[];
+  addresses: Address[]; // exactly one isDefault when not empty (see src/lib/address.ts)
   cards: Card[];
   offers: Offer[];
   drones: Drone[];
@@ -51,7 +52,7 @@ const initial: State = {
   recent: ["Paracetamol", "Headache", "Vitamin C"],
   user: null,
   orders: [],
-  addresses: ["Amir Temur Ave 108, apt 12, Tashkent"],
+  addresses: [], // entered by the user during registration, in Profile or at checkout
   cards: [],
   offers: OFFERS,
   drones: [
@@ -96,8 +97,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (loaded && state !== initial) localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, loaded]);
   const set: Ctx["set"] = (fn) => setState((s) => withConsentRule({ ...s, ...fn(s) }));
-  // Logging out drops the user, and with it the name, phone and health conditions.
-  const logout = () => setState((s) => ({ ...s, user: null }));
+  // Logging out drops the user (name, phone, health conditions) and their delivery addresses,
+  // so the next person using this device does not see where they live.
+  const logout = () => setState((s) => ({ ...s, user: null, addresses: [] }));
   const deleteAllData = () => {
     deleteMyData(localStorage);
     setState(initial);

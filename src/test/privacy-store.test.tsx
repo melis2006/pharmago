@@ -2,6 +2,7 @@
 import { act, render, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 
+import { addAddress, EMPTY_ADDRESS } from "@/lib/address";
 import { STORAGE_KEY } from "@/lib/privacy";
 import { StoreProvider, useStore } from "@/lib/store";
 
@@ -64,6 +65,27 @@ describe("store privacy behaviour", () => {
 
     await waitFor(() => expect(saved()?.user).toBeNull());
     expect(localStorage.getItem(STORAGE_KEY)).not.toContain("diabetes");
+  });
+
+  it("starts with no delivery address, and log out removes saved addresses", async () => {
+    const store = renderStore();
+    expect(store.current!.addresses).toEqual([]);
+    act(() =>
+      store.current!.set(() => ({
+        user: { name: "Test", phone: "+998", conditions: [], healthConsent: false },
+        addresses: addAddress([], {
+          ...EMPTY_ADDRESS,
+          district: "Chilonzor",
+          street: "Bunyodkor 7",
+        }),
+      })),
+    );
+    await waitFor(() => expect(localStorage.getItem(STORAGE_KEY)).toContain("Bunyodkor 7"));
+
+    act(() => store.current!.logout());
+
+    await waitFor(() => expect(saved()?.addresses).toEqual([]));
+    expect(localStorage.getItem(STORAGE_KEY)).not.toContain("Bunyodkor");
   });
 
   it("delete my data removes everything PharmaGO stored and does not write it back", async () => {

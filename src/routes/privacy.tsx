@@ -49,7 +49,7 @@ function Privacy() {
             <Link to="/profile" className="font-semibold text-primary underline">
               Profile
             </Link>
-            , and logging out removes your health conditions.
+            , and logging out removes your health conditions and your delivery addresses.
           </p>
         </Section>
 

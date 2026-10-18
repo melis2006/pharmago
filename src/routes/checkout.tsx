@@ -1,9 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Plus } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { AddressForm } from "@/components/AddressForm";
 import { MedicineImage } from "@/components/MedicineImage";
 import { PageTitle, Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { addAddress, defaultAddress, formatAddress, newAddressId } from "@/lib/address";
 import { DELIVERY, formatSum, getMedicine } from "@/lib/data";
 import { orderTotals, type DeliveryMethod } from "@/lib/pricing";
 import { seo } from "@/lib/seo";
@@ -31,6 +34,7 @@ function Choice({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={on}
       className={`rounded-xl border-2 p-4 text-left text-lg font-semibold ${on ? "border-primary bg-secondary" : "border-border bg-card"}`}
     >
       {children}
@@ -41,7 +45,13 @@ function Choice({
 function Checkout() {
   const { cart, addresses, cards, set } = useStore();
   const nav = useNavigate();
-  const [address, setAddress] = useState(addresses[0] ?? "");
+  // The chosen address; until the user picks one, the default address is used.
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  const selected = addresses.find((a) => a.id === selectedId) ?? defaultAddress(addresses);
+  const showForm = adding || addresses.length === 0;
+  // While the address form is open nothing is selected, so paying waits until it is saved or closed.
+  const deliverTo = showForm ? undefined : selected;
   const [where, setWhere] = useState("Doorstep");
   const [when, setWhen] = useState<"asap" | "time">("asap");
   const [time, setTime] = useState("");
@@ -54,19 +64,20 @@ function Checkout() {
 
   const submit = () => {
     const miss: string[] = [];
-    if (!address.trim()) miss.push("Delivery address");
+    if (!deliverTo) miss.push("Delivery address");
     if (!pay) miss.push("Payment method");
     if (needsCard && card.num.replace(/\s/g, "").length < 16) miss.push("Card details");
     if (cart.length === 0) miss.push("Items in your cart");
-    if (miss.length) return setMissing(miss);
+    if (miss.length || !deliverTo) return setMissing(miss);
     const id = `PG-${Math.floor(100000 + Math.random() * 900000)}`;
+    // Orders keep the address as text, so later edits in Profile do not change past orders.
+    const address = formatAddress(deliverTo) + (deliverTo.note ? ` (note: ${deliverTo.note})` : "");
     set((s) => ({
       orders: [
         { id, items: s.cart, total, method, address, status: "Packaged", createdAt: Date.now() },
         ...s.orders,
       ],
       cart: [],
-      addresses: s.addresses.includes(address) ? s.addresses : [address, ...s.addresses],
       cards: needsCard
         ? [...s.cards, { last4: card.num.replace(/\s/g, "").slice(-4), type: pay! }]
         : s.cards,
@@ -80,12 +91,53 @@ function Checkout() {
       <div className="grid gap-6 md:grid-cols-[1fr_360px]">
         <div className="space-y-6">
           <Section title="Delivery address">
-            <input
-              className={input}
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Street, house, apartment"
-            />
+            {addresses.length > 0 && (
+              <div className="grid gap-3">
+                {addresses.map((a) => (
+                  <Choice
+                    key={a.id}
+                    on={!adding && a.id === selected?.id}
+                    onClick={() => {
+                      setSelectedId(a.id);
+                      setAdding(false);
+                    }}
+                  >
+                    <span className="block">{formatAddress(a)}</span>
+                    {a.note && (
+                      <span className="block font-normal text-muted-foreground">
+                        Note: {a.note}
+                      </span>
+                    )}
+                    {a.isDefault && (
+                      <span className="mt-1 inline-block rounded-lg bg-primary px-2 text-base text-primary-foreground">
+                        Default
+                      </span>
+                    )}
+                  </Choice>
+                ))}
+              </div>
+            )}
+            {showForm ? (
+              <div className="card-soft mt-3 p-4">
+                <p className="mb-3 text-xl font-bold">
+                  {addresses.length === 0 ? "Where should we deliver?" : "New address"}
+                </p>
+                <AddressForm
+                  submitLabel="Save address"
+                  onCancel={addresses.length > 0 ? () => setAdding(false) : undefined}
+                  onSubmit={(input) => {
+                    const id = newAddressId();
+                    set((s) => ({ addresses: addAddress(s.addresses, input, { id }) }));
+                    setSelectedId(id);
+                    setAdding(false);
+                  }}
+                />
+              </div>
+            ) : (
+              <Button size="lg" variant="outline" className="mt-3" onClick={() => setAdding(true)}>
+                <Plus /> Add a new address
+              </Button>
+            )}
           </Section>
           <Section title="Where to deliver">
             <div className="grid grid-cols-3 gap-3">
@@ -191,9 +243,17 @@ function Checkout() {
             <span>Total</span>
             <span>{formatSum(total)}</span>
           </div>
-          <Button size="xl" className="w-full" onClick={submit}>
-            Pay {formatSum(total)}
-          </Button>
+          {deliverTo ? (
+            <Button size="xl" className="w-full" onClick={submit}>
+              Pay {formatSum(total)}
+            </Button>
+          ) : (
+            <p role="status" className="rounded-xl bg-fast/20 p-4 text-lg font-semibold">
+              {addresses.length === 0
+                ? "Please add your delivery address first. Then you can pay."
+                : "Please save or cancel the new address first. Then you can pay."}
+            </p>
+          )}
         </div>
       </div>
       <Dialog open={!!missing} onOpenChange={() => setMissing(null)}>

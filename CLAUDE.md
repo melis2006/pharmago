@@ -17,7 +17,7 @@ The code was originally generated with Lovable and exported. This repository
 (https://github.com/melis2006/pharmago) is **not** connected to Lovable — develop here only.
 
 - **All data is mock/demo data.** There is no backend; app state lives in the browser
-  (`localStorage`, key `pharmago-v3`; bump `STORAGE_KEY` in `src/lib/privacy.ts` when saved data changes shape).
+  (`localStorage`, key `pharmago-v4`; bump `STORAGE_KEY` in `src/lib/privacy.ts` when saved data changes shape).
 - **English only**, with no language switcher. "Ask AI", "Call operator", voice search and the
   Emergency buttons are intentional **"Coming soon" placeholders** (they call `soon()` from
   `src/components/Shell.tsx`, which shows a toast).
@@ -53,7 +53,8 @@ src/
                      soon(), Footer), BackButton (history back, or parent page),
                      MedicineCard, MedicineImage (photo or generated box), Pharmacy (logo,
                      stars, Contact toast), HealthWarning, Privacy (consent checkbox,
-                     Delete my data), SearchBar, ui/ (shadcn)
+                     Delete my data), AddressForm (registration, Profile, checkout),
+                     SavedAddresses (Profile), SearchBar, ui/ (shadcn)
   assets/products/   product photos
   lib/
     data.ts          mock MEDICINES, PHARMACIES, OFFERS (medicine × pharmacy: price, stock,
@@ -61,6 +62,7 @@ src/
     pricing.ts       bestOffer, cheapestOffer, compareOptions (sort/filter), orderTotals
     health.ts        getWarnings(medicine, conditions)
     privacy.ts       STORAGE_KEY, consent rule, deleteMyData, removeLegacyData
+    address.ts       Address type, validateAddress, formatAddress, add/update/remove/default
     navigation.ts    parentPath (Back fallback), showBackButton (not on / and /home)
     store.tsx        React context store persisted to localStorage (cart, saved, user,
                      orders, addresses, cards, offers, drones, admin) + addToCart(),
