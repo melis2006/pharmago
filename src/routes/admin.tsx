@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import { BackButton } from "@/components/BackButton";
 import { Logo } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { formatSum, getMedicine, PHARMACIES, type Offer } from "@/lib/data";
@@ -21,40 +22,42 @@ function Admin() {
   const [p, setP] = useState("");
   if (!admin)
     return (
-      <div className="flex min-h-screen items-center justify-center px-4">
-        <form
-          className="card-soft grid w-full max-w-sm gap-4 p-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (u === "admin" && p === "admin") set(() => ({ admin: true }));
-            else toast.error("Wrong login. Demo: admin / admin");
-          }}
-        >
-          <Logo size="text-3xl" />
-          <h1 className="text-2xl font-bold">Admin login</h1>
-          <input
-            className={inputCls}
-            aria-label="Username"
-            placeholder="Username"
-            value={u}
-            onChange={(e) => setU(e.target.value)}
-          />
-          <input
-            className={inputCls}
-            aria-label="Password"
-            type="password"
-            placeholder="Password"
-            value={p}
-            onChange={(e) => setP(e.target.value)}
-          />
-          <Button size="lg" type="submit">
-            Sign in
-          </Button>
-          <p className="text-muted-foreground">Demo: admin / admin</p>
-          <Link to="/home" className="inline-flex min-h-12 items-center text-primary underline">
-            Back to site
-          </Link>
-        </form>
+      <div className="flex min-h-screen flex-col px-4">
+        <div className="sticky top-0 z-10 -mx-4 bg-background px-4 py-3">
+          <BackButton />
+        </div>
+        <div className="flex flex-1 items-center justify-center pb-10">
+          <form
+            className="card-soft grid w-full max-w-sm gap-4 p-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (u === "admin" && p === "admin") set(() => ({ admin: true }));
+              else toast.error("Wrong login. Demo: admin / admin");
+            }}
+          >
+            <Logo size="text-3xl" />
+            <h1 className="text-2xl font-bold">Admin login</h1>
+            <input
+              className={inputCls}
+              aria-label="Username"
+              placeholder="Username"
+              value={u}
+              onChange={(e) => setU(e.target.value)}
+            />
+            <input
+              className={inputCls}
+              aria-label="Password"
+              type="password"
+              placeholder="Password"
+              value={p}
+              onChange={(e) => setP(e.target.value)}
+            />
+            <Button size="lg" type="submit">
+              Sign in
+            </Button>
+            <p className="text-muted-foreground">Demo: admin / admin</p>
+          </form>
+        </div>
       </div>
     );
   return <Panel />;
@@ -65,7 +68,10 @@ function Panel() {
   const [tab, setTab] = useState<"orders" | "stock" | "drones">("orders");
   const [ph, setPh] = useState(PHARMACIES[0]!.id);
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6">
+    <div className="mx-auto max-w-6xl px-4 pb-6">
+      <div className="sticky top-0 z-10 -mx-4 bg-background px-4 py-3">
+        <BackButton />
+      </div>
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Logo />

@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CreditCard, Globe, Heart, Lock, LogOut, MapPin, Package, ShieldCheck } from "lucide-react";
+import { CreditCard, Heart, Lock, LogOut, MapPin, Package, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import type { ReactNode } from "react";
 import { DeleteMyDataButton, HealthConsent } from "@/components/Privacy";
-import { PageTitle, Shell, soon } from "@/components/Shell";
+import { PageTitle, Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { CONDITIONS, type Condition } from "@/lib/data";
 import { seo } from "@/lib/seo";
@@ -104,17 +104,6 @@ function Profile() {
           <Link to="/saved" className="text-primary underline">
             {saved.length} saved
           </Link>
-        </Card>
-        <Card icon={<Globe />} title="Language">
-          <div className="flex flex-wrap gap-2">
-            <Button aria-pressed>English</Button>
-            <Button variant="secondary" onClick={() => soon("O'zbek")}>
-              O'zbek
-            </Button>
-            <Button variant="secondary" onClick={() => soon("Русский")}>
-              Русский
-            </Button>
-          </div>
         </Card>
       </div>
       <Button

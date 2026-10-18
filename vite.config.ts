@@ -16,5 +16,5 @@ export default defineConfig({
   // (static assets + one server function that renders every route). Without this the wrapper
   // falls back to Cloudflare Workers. A preset set here beats Nitro's own NITRO_PRESET check, so
   // we read the variable ourselves: e.g. NITRO_PRESET=node-server builds a plain Node server.
-  nitro: { preset: process.env.NITRO_PRESET || "vercel" },
+  nitro: { preset: process.env["NITRO_PRESET"] || "vercel" },
 });

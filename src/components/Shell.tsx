@@ -1,8 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, Heart, ShoppingCart, Package, User, Siren } from "lucide-react";
 import type { ReactNode } from "react";
+import { showBackButton } from "@/lib/navigation";
 import { useStore } from "@/lib/store";
 import { toast } from "sonner";
+import { BackButton } from "./BackButton";
 
 export function Logo({ size = "text-2xl" }: { size?: string }) {
   return (
@@ -61,6 +63,12 @@ export function Shell({ children }: { children: ReactNode }) {
             <span className="hidden sm:inline">Emergency</span>
           </Link>
         </div>
+        {/* Second header row, so "Back" stays visible while scrolling (not on home). */}
+        {showBackButton(path) && (
+          <div className="mx-auto max-w-6xl px-4 pb-3">
+            <BackButton />
+          </div>
+        )}
       </header>
       <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
       <Footer />

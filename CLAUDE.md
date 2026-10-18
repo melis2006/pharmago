@@ -18,8 +18,8 @@ The code was originally generated with Lovable and exported. This repository
 
 - **All data is mock/demo data.** There is no backend; app state lives in the browser
   (`localStorage`, key `pharmago-v3`; bump `STORAGE_KEY` in `src/lib/privacy.ts` when saved data changes shape).
-- **English only.** Uzbek/Russian on the welcome screen, "Ask AI", "Call operator", voice search
-  and the Emergency buttons are intentional **"Coming soon" placeholders** (they call `soon()` from
+- **English only**, with no language switcher. "Ask AI", "Call operator", voice search and the
+  Emergency buttons are intentional **"Coming soon" placeholders** (they call `soon()` from
   `src/components/Shell.tsx`, which shows a toast).
 
 ## Tech stack
@@ -42,14 +42,15 @@ The code was originally generated with Lovable and exported. This repository
 src/
   routes/            file-based routes (routeTree.gen.ts is generated — never edit by hand)
     __root.tsx       app shell: <html>, StoreProvider, Toaster, 404/error pages
-    index.tsx        /                    welcome + language choice
+    index.tsx        /                    start screen (benefits, Get started, Log in)
     home.tsx         /home                search, categories, popular medicines
     search.tsx       /search              results
     medicine.$id.tsx /medicine/:id        details, pack choice, health warning
     compare.$id.tsx  /compare/:id         price comparison across pharmacies
     cart.tsx, checkout.tsx, success.$orderId.tsx, track.$orderId.tsx, orders.tsx
     saved.tsx, profile.tsx, login.tsx, emergency.tsx, admin.tsx (stock + drone fleet)
-  components/        Shell (header, bottom nav, Logo, PageTitle, Stars, soon()),
+  components/        Shell (header with sticky Back row, bottom nav, Logo, PageTitle, Stars,
+                     soon(), Footer), BackButton (history back, or parent page),
                      MedicineCard, MedicineImage (photo or generated box), Pharmacy (logo,
                      stars, Contact toast), HealthWarning, Privacy (consent checkbox,
                      Delete my data), SearchBar, ui/ (shadcn)
@@ -60,6 +61,7 @@ src/
     pricing.ts       bestOffer, cheapestOffer, compareOptions (sort/filter), orderTotals
     health.ts        getWarnings(medicine, conditions)
     privacy.ts       STORAGE_KEY, consent rule, deleteMyData, removeLegacyData
+    navigation.ts    parentPath (Back fallback), showBackButton (not on / and /home)
     store.tsx        React context store persisted to localStorage (cart, saved, user,
                      orders, addresses, cards, offers, drones, admin) + addToCart(),
                      logout(), deleteAllData()
@@ -97,8 +99,8 @@ npm run format     # prettier --write . (run before committing)
    high contrast. Do not add clutter, small fonts or hidden gestures.
 2. **All data is mock.** Do not add a real backend, real payments or external APIs; keep data in
    `src/lib/data.ts` and state in `src/lib/store.tsx` (localStorage).
-3. **Placeholders stay placeholders.** Uzbek/Russian, Ask AI, Call operator, voice search and
-   Emergency remain "Coming soon" unless a task explicitly says otherwise.
+3. **Placeholders stay placeholders.** Ask AI, Call operator, voice search and Emergency remain
+   "Coming soon" unless a task explicitly says otherwise. Do not add language switchers.
 4. **Every task ends with a working build and exactly one commit:** run `npm run build` and
    `npm test` before committing.
 5. English only for UI text. Use npm (not bun) for dependencies.
