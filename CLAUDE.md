@@ -47,7 +47,10 @@ src/
     search.tsx       /search              results
     medicine.$id.tsx /medicine/:id        details, pack choice, health warning
     compare.$id.tsx  /compare/:id         price comparison across pharmacies
-    cart.tsx, checkout.tsx, success.$orderId.tsx, track.$orderId.tsx, orders.tsx
+    cart.tsx, checkout.tsx, success.$orderId.tsx
+    orders.tsx       /orders              current orders (→ tracking) and past orders (→ details)
+    track.$orderId.tsx /track/:id         live tracking: SVG map + drone/courier + status card
+    order.$orderId.tsx /order/:id         past order details (items, address, payment, rating)
     saved.tsx, profile.tsx, login.tsx, emergency.tsx, admin.tsx (stock + drone fleet)
   components/        Shell (header with sticky Back row, bottom nav, Logo, PageTitle, Stars,
                      soon(), Footer), BackButton (history back, or parent page),
@@ -63,6 +66,8 @@ src/
     health.ts        getWarnings(medicine, conditions)
     privacy.ts       STORAGE_KEY, consent rule, deleteMyData, removeLegacyData
     address.ts       Address type, validateAddress, formatAddress, add/update/remove/default
+    tracking.ts      order stage/progress from createdAt (3 s packaging, 20 s travel),
+                     syncOrderStatuses, deliveryWindow, route curve for the map
     navigation.ts    parentPath (Back fallback), showBackButton (not on / and /home)
     store.tsx        React context store persisted to localStorage (cart, saved, user,
                      orders, addresses, cards, offers, drones, admin) + addToCart(),

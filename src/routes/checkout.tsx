@@ -74,7 +74,17 @@ function Checkout() {
     const address = formatAddress(deliverTo) + (deliverTo.note ? ` (note: ${deliverTo.note})` : "");
     set((s) => ({
       orders: [
-        { id, items: s.cart, total, method, address, status: "Packaged", createdAt: Date.now() },
+        {
+          id,
+          items: s.cart,
+          total,
+          method,
+          address,
+          status: "Packaged",
+          createdAt: Date.now(),
+          payment: pay!,
+          where,
+        },
         ...s.orders,
       ],
       cart: [],

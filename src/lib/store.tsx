@@ -3,6 +3,7 @@ import type { Address } from "./address";
 import { OFFERS, offersFor, type Condition, type Offer } from "./data";
 import { bestOffer as pickBestOffer } from "./pricing";
 import { deleteMyData, removeLegacyData, sanitizeUser, STORAGE_KEY } from "./privacy";
+import { syncOrderStatuses, type OrderStatus } from "./tracking";
 
 export type CartItem = {
   key: string;
@@ -14,15 +15,17 @@ export type CartItem = {
 };
 // conditions are only kept when healthConsent is true (enforced on every update).
 export type User = { name: string; phone: string; conditions: Condition[]; healthConsent: boolean };
-export type OrderStatus = "Packaged" | "On the way" | "Delivered";
+export type { OrderStatus };
 export type Order = {
   id: string;
   items: CartItem[];
   total: number;
   method: "drone" | "courier";
   address: string;
-  status: OrderStatus;
+  status: OrderStatus; // kept in sync with the clock by the store (see src/lib/tracking.ts)
   createdAt: number;
+  payment?: string; // "Cash", "Uzcard", ...
+  where?: string; // "Doorstep", "Balcony", ...
   rating?: number;
 };
 export type Card = { last4: string; type: string };
@@ -72,6 +75,8 @@ type Ctx = State & {
   logout: () => void;
   // Removes everything PharmaGO stored in this browser and resets the app.
   deleteAllData: () => void;
+  // False until saved data has been read from localStorage (always false during server rendering).
+  hydrated: boolean;
 };
 
 const StoreCtx = createContext<Ctx | null>(null);
@@ -96,6 +101,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     // The untouched initial state is not saved, so after "Delete my data" nothing is written back.
     if (loaded && state !== initial) localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, loaded]);
+  // While an order is being packaged or delivered, move its saved status along with the clock,
+  // so Orders, Home and the admin panel are right even when the tracking page is closed.
+  const hasActiveOrder = state.orders.some((o) => o.status !== "Delivered");
+  useEffect(() => {
+    if (!loaded || !hasActiveOrder) return;
+    const tick = () =>
+      setState((s) => {
+        const orders = syncOrderStatuses(s.orders, Date.now());
+        return orders === s.orders ? s : { ...s, orders };
+      });
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [loaded, hasActiveOrder]);
   const set: Ctx["set"] = (fn) => setState((s) => withConsentRule({ ...s, ...fn(s) }));
   // Logging out drops the user (name, phone, health conditions) and their delivery addresses,
   // so the next person using this device does not see where they live.
@@ -120,6 +139,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         bestOffer: best,
         logout,
         deleteAllData,
+        hydrated: loaded,
       }}
     >
       {children}

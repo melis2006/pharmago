@@ -9,6 +9,7 @@ describe("Back button fallback (no browser history)", () => {
     ["/cart", "/home"],
     ["/checkout", "/cart"],
     ["/track/PG-123456", "/orders"],
+    ["/order/PG-123456", "/orders"],
     ["/orders", "/home"],
     ["/saved", "/home"],
     ["/profile", "/home"],

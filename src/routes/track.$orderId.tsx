@@ -1,10 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, Headphones, Home, Phone, Store } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { Bike, Check, Headphones, Home, MapPin, Package, Phone, Plus } from "lucide-react";
+import type { ReactNode } from "react";
+import { DroneIcon, RatingStars } from "@/components/Order";
 import { Shell, soon } from "@/components/Shell";
+import { TrackingMap } from "@/components/TrackingMap";
 import { Button } from "@/components/ui/button";
-import { useStore, type OrderStatus } from "@/lib/store";
+import { useStore, type Order } from "@/lib/store";
+import { deliveryWindow, methodLabel, STATUS_TEXT, trackingState } from "@/lib/tracking";
+import { useNow } from "@/lib/useNow";
 
 export const Route = createFileRoute("/track/$orderId")({
   head: () => ({
@@ -18,39 +21,14 @@ export const Route = createFileRoute("/track/$orderId")({
   component: Track,
 });
 
-const STAGES: OrderStatus[] = ["Packaged", "On the way", "Delivered"];
-const DURATION = 20; // demo seconds
-
 function Track() {
   const { orderId } = Route.useParams();
-  const { orders, set } = useStore();
+  const { orders, hydrated } = useStore();
   const order = orders.find((o) => o.id === orderId);
-  const [t, setT] = useState(0);
-  const [stars, setStars] = useState(0);
-  const status = order?.status;
-  useEffect(() => {
-    if (status === "Delivered") {
-      setT(DURATION);
-      return;
-    }
-    // An order the admin already marked "On the way" starts moving at once.
-    if (status === "On the way") setT((x) => Math.max(x, 3));
-    const i = setInterval(() => setT((x) => Math.min(DURATION, x + 1)), 1000);
-    return () => clearInterval(i);
-  }, [status]);
-  const timerStage = t >= DURATION ? 2 : t >= 3 ? 1 : 0;
-  // The saved status (which the admin can change) is never shown behind the demo timer.
-  const stage = Math.max(timerStage, status ? STAGES.indexOf(status) : 0);
-  useEffect(() => {
-    if (status && STAGES.indexOf(status) < stage)
-      set((s) => ({
-        orders: s.orders.map((o) => (o.id === orderId ? { ...o, status: STAGES[stage]! } : o)),
-      }));
-  }, [stage, status, orderId, set]);
-  const progress = stage === 0 ? 0 : Math.min(1, (t - 3) / (DURATION - 3));
-  const isDrone = order?.method !== "courier";
-  const mins = Math.max(0, Math.ceil((1 - progress) * (isDrone ? 12 : 25)));
-
+  // Everything is computed from the order's creation time, so leaving and coming back continues
+  // where the delivery really is.
+  const now = useNow(500, !!order && order.status !== "Delivered");
+  if (!hydrated) return <Shell>{null}</Shell>;
   if (!order)
     return (
       <Shell>
@@ -62,105 +40,70 @@ function Track() {
         </p>
       </Shell>
     );
-
-  if (stage === 2)
-    return (
-      <Shell>
-        <div className="flex flex-col items-center py-10 text-center">
-          <div className="grid h-36 w-36 place-items-center rounded-full bg-primary text-primary-foreground">
-            <Check className="h-20 w-20" strokeWidth={3} />
-          </div>
-          <h1 className="mt-6 text-4xl font-bold">Delivered</h1>
-          <p className="mt-2 text-xl text-muted-foreground">
-            Order {order.id}. How was your delivery?
-          </p>
-          <div className="mt-6 flex gap-2">
-            {[1, 2, 3, 4, 5].map((n) => (
-              <button
-                key={n}
-                aria-label={`${n} ${n === 1 ? "star" : "stars"}`}
-                aria-pressed={n === (stars || order.rating || 0)}
-                onClick={() => {
-                  setStars(n);
-                  set((s) => ({
-                    orders: s.orders.map((o) => (o.id === orderId ? { ...o, rating: n } : o)),
-                  }));
-                  toast.success("Thank you for your rating!");
-                }}
-                className={`text-6xl ${n <= (stars || order.rating || 0) ? "text-star" : "text-border"}`}
-              >
-                ★
-              </button>
-            ))}
-          </div>
-          <Button asChild size="xl" className="mt-8">
-            <Link to="/home">Back to home</Link>
-          </Button>
-        </div>
-      </Shell>
-    );
-
+  const state = trackingState(order, now);
   return (
     <Shell>
-      <h1 className="text-3xl font-bold">Order {order.id}</h1>
-      <p className="mt-1 text-xl">
-        Arrives in about <b className="text-primary">{mins} min</b> by{" "}
-        {isDrone ? "drone" : "courier"}
-      </p>
-      <div className="card-soft relative mt-5 h-80 overflow-hidden bg-secondary md:h-96">
-        <div className="absolute inset-0 opacity-50 [background-image:linear-gradient(var(--border)_1px,transparent_1px),linear-gradient(90deg,var(--border)_1px,transparent_1px)] [background-size:40px_40px]" />
-        {/* Route from 15% to 85% so the "Pharmacy" and "Home" labels are not cut off on phones. */}
-        <svg
-          className="absolute inset-0 h-full w-full"
-          preserveAspectRatio="none"
-          viewBox="0 0 100 100"
-        >
-          <line
-            x1="15"
-            y1="80"
-            x2="85"
-            y2="20"
-            stroke="var(--primary)"
-            strokeWidth="0.6"
-            strokeDasharray="2 2"
-          />
-        </svg>
-        <div
-          className="absolute flex flex-col items-center"
-          style={{ left: "15%", top: "80%", transform: "translate(-50%,-50%)" }}
-        >
-          <Store className="h-10 w-10 text-primary" />
-          <span className="rounded bg-card px-2 font-bold">Pharmacy</span>
-        </div>
-        <div
-          className="absolute flex flex-col items-center"
-          style={{ left: "85%", top: "20%", transform: "translate(-50%,-50%)" }}
-        >
-          <Home className="h-10 w-10 text-destructive" />
-          <span className="rounded bg-card px-2 font-bold">Home</span>
-        </div>
-        <div
-          className="absolute text-5xl transition-all duration-1000 ease-linear"
-          style={{
-            left: `${15 + 70 * progress}%`,
-            top: `${80 - 60 * progress}%`,
-            transform: "translate(-50%,-50%)",
-          }}
-        >
-          {isDrone ? "🚁" : "🛵"}
-        </div>
+      <h1 className="sr-only">Track order {order.id}</h1>
+      <div className="md:grid md:grid-cols-[1fr_420px] md:items-start md:gap-6">
+        <TrackingMap
+          travel={state.travel}
+          method={order.method}
+          className="h-[42vh] min-h-72 md:sticky md:top-44 md:h-[calc(100vh-15rem)] md:min-h-[520px]"
+        />
+        {/* On phones the card overlaps the map like a bottom sheet. */}
+        <section className="card-soft relative z-10 -mt-8 rounded-t-3xl p-5 md:mt-0 md:rounded-3xl md:p-6">
+          <div className="mx-auto mb-4 h-1.5 w-14 rounded-full bg-border md:hidden" aria-hidden />
+          {state.stage === 2 ? (
+            <Delivered order={order} />
+          ) : (
+            <InProgress order={order} state={state} />
+          )}
+        </section>
       </div>
-      <ol className="mt-6 grid grid-cols-3 gap-2">
-        {STAGES.map((s, i) => (
-          <li
-            key={s}
-            className={`rounded-xl p-4 text-center text-lg font-bold ${i <= stage ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-          >
-            {s}
-          </li>
-        ))}
-      </ol>
-      <div className="mt-6 grid grid-cols-2 gap-3">
+    </Shell>
+  );
+}
+
+function InProgress({ order, state }: { order: Order; state: ReturnType<typeof trackingState> }) {
+  const packaging = state.stage === 0;
+  return (
+    <div className="grid gap-5 text-lg">
+      <div>
+        <p className="text-muted-foreground">Estimated delivery time</p>
+        <p className="font-display text-4xl font-bold tracking-tight">{deliveryWindow(order)}</p>
+      </div>
+      <p className="text-2xl font-bold" role="status" aria-live="polite">
+        {STATUS_TEXT[state.stage]}
+      </p>
+
+      {/* package → drone/courier → house, filling as the order moves */}
+      <div className="flex items-center gap-2" aria-hidden>
+        <StepIcon done>
+          <Package className="h-7 w-7" />
+        </StepIcon>
+        <Bar fill={state.packaging} />
+        <StepIcon done={state.stage >= 1}>
+          {order.method === "drone" ? (
+            <DroneIcon className="h-9 w-9" spin={state.stage === 1} />
+          ) : (
+            <Bike className="h-7 w-7" />
+          )}
+        </StepIcon>
+        <Bar fill={state.travel} />
+        <StepIcon done={false}>
+          <Home className="h-7 w-7" />
+        </StepIcon>
+      </div>
+
+      <p className="flex items-start gap-2">
+        <MapPin className="mt-1 h-5 w-5 shrink-0 text-primary" aria-hidden />
+        <span>{order.address}</span>
+      </p>
+      <p className="text-muted-foreground">
+        Order {order.id} · {methodLabel(order.method)}
+      </p>
+
+      <div className="grid grid-cols-2 gap-3">
         <Button
           size="xl"
           variant="outline"
@@ -177,6 +120,88 @@ function Track() {
           <Phone /> Contact courier
         </Button>
       </div>
-    </Shell>
+      <div className="grid gap-2">
+        <Button
+          size="xl"
+          variant="outline"
+          disabled={!packaging}
+          onClick={() => soon("Additional order")}
+        >
+          <Plus /> Additional order
+        </Button>
+        <p className="text-base text-muted-foreground">
+          Additional order is possible only while the order is being packaged.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function StepIcon({ done, children }: { done: boolean; children: ReactNode }) {
+  return (
+    <span
+      className={`grid h-14 w-14 shrink-0 place-items-center rounded-full border-2 transition-colors ${done ? "border-primary bg-primary-soft text-primary" : "border-border bg-card text-muted-foreground"}`}
+    >
+      {children}
+    </span>
+  );
+}
+
+function Bar({ fill }: { fill: number }) {
+  return (
+    <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-secondary">
+      <span
+        className="block h-full rounded-full bg-primary transition-[width] duration-500 ease-linear"
+        style={{ width: `${Math.round(fill * 100)}%` }}
+      />
+    </span>
+  );
+}
+
+const CONFETTI_COLORS = ["#22a06b", "#f59e0b", "#e11d48", "#3b82f6", "#a855f7"];
+
+function Delivered({ order }: { order: Order }) {
+  const { set } = useStore();
+  return (
+    <div className="relative grid justify-items-center gap-4 overflow-hidden py-4 text-center text-lg">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-72" aria-hidden>
+        {Array.from({ length: 28 }, (_, i) => (
+          <span
+            key={i}
+            className="confetti-piece"
+            style={{
+              left: `${(i * 37) % 100}%`,
+              background: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+              animationDelay: `${(i % 7) * 0.12}s`,
+              transform: `rotate(${i * 25}deg)`,
+            }}
+          />
+        ))}
+      </div>
+      <div className="grid h-32 w-32 place-items-center rounded-full bg-primary text-primary-foreground shadow-xl">
+        <Check className="h-20 w-20" strokeWidth={3} aria-hidden />
+      </div>
+      <p className="text-3xl font-bold" role="status">
+        {STATUS_TEXT[2]}
+      </p>
+      <p className="flex items-start gap-2 text-left">
+        <MapPin className="mt-1 h-5 w-5 shrink-0 text-primary" aria-hidden />
+        <span>{order.address}</span>
+      </p>
+      <div className="grid justify-items-center gap-1">
+        <p className="font-semibold">How was your delivery?</p>
+        <RatingStars
+          value={order.rating ?? 0}
+          onRate={(n) =>
+            set((s) => ({
+              orders: s.orders.map((o) => (o.id === order.id ? { ...o, rating: n } : o)),
+            }))
+          }
+        />
+      </div>
+      <Button asChild size="xl" className="w-full">
+        <Link to="/home">Back to home</Link>
+      </Button>
+    </div>
   );
 }

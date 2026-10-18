@@ -8,7 +8,8 @@ export function parentPath(pathname: string): string {
     case "checkout":
       return "/cart";
     case "track":
-      return "/orders";
+    case "order":
+      return "/orders"; // tracking and order details → my orders
     default:
       return "/home"; // medicine, cart and everything else
   }

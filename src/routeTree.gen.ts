@@ -23,6 +23,7 @@ import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as CompareIdRouteImport } from './routes/compare.$id'
 import { Route as MedicineIdRouteImport } from './routes/medicine.$id'
+import { Route as OrderOrderIdRouteImport } from './routes/order.$orderId'
 import { Route as SuccessOrderIdRouteImport } from './routes/success.$orderId'
 import { Route as TrackOrderIdRouteImport } from './routes/track.$orderId'
 
@@ -96,6 +97,11 @@ const MedicineIdRoute = MedicineIdRouteImport.update({
   path: '/medicine/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrderOrderIdRoute = OrderOrderIdRouteImport.update({
+  id: '/order/$orderId',
+  path: '/order/$orderId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuccessOrderIdRoute = SuccessOrderIdRouteImport.update({
   id: '/success/$orderId',
   path: '/success/$orderId',
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/compare/$id': typeof CompareIdRoute
   '/medicine/$id': typeof MedicineIdRoute
+  '/order/$orderId': typeof OrderOrderIdRoute
   '/success/$orderId': typeof SuccessOrderIdRoute
   '/track/$orderId': typeof TrackOrderIdRoute
 }
@@ -140,6 +147,7 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/compare/$id': typeof CompareIdRoute
   '/medicine/$id': typeof MedicineIdRoute
+  '/order/$orderId': typeof OrderOrderIdRoute
   '/success/$orderId': typeof SuccessOrderIdRoute
   '/track/$orderId': typeof TrackOrderIdRoute
 }
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/compare/$id': typeof CompareIdRoute
   '/medicine/$id': typeof MedicineIdRoute
+  '/order/$orderId': typeof OrderOrderIdRoute
   '/success/$orderId': typeof SuccessOrderIdRoute
   '/track/$orderId': typeof TrackOrderIdRoute
 }
@@ -179,6 +188,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/compare/$id'
     | '/medicine/$id'
+    | '/order/$orderId'
     | '/success/$orderId'
     | '/track/$orderId'
   fileRoutesByTo: FileRoutesByTo
@@ -197,6 +207,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/compare/$id'
     | '/medicine/$id'
+    | '/order/$orderId'
     | '/success/$orderId'
     | '/track/$orderId'
   id:
@@ -215,6 +226,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/compare/$id'
     | '/medicine/$id'
+    | '/order/$orderId'
     | '/success/$orderId'
     | '/track/$orderId'
   fileRoutesById: FileRoutesById
@@ -234,6 +246,7 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   CompareIdRoute: typeof CompareIdRoute
   MedicineIdRoute: typeof MedicineIdRoute
+  OrderOrderIdRoute: typeof OrderOrderIdRoute
   SuccessOrderIdRoute: typeof SuccessOrderIdRoute
   TrackOrderIdRoute: typeof TrackOrderIdRoute
 }
@@ -338,6 +351,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MedicineIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/order/$orderId': {
+      id: '/order/$orderId'
+      path: '/order/$orderId'
+      fullPath: '/order/$orderId'
+      preLoaderRoute: typeof OrderOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/success/$orderId': {
       id: '/success/$orderId'
       path: '/success/$orderId'
@@ -370,6 +390,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   CompareIdRoute: CompareIdRoute,
   MedicineIdRoute: MedicineIdRoute,
+  OrderOrderIdRoute: OrderOrderIdRoute,
   SuccessOrderIdRoute: SuccessOrderIdRoute,
   TrackOrderIdRoute: TrackOrderIdRoute,
 }

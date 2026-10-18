@@ -1,15 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bot, HelpCircle, Phone, Siren } from "lucide-react";
+import { Bot, ChevronRight, HelpCircle, Phone, Siren } from "lucide-react";
 import { useState } from "react";
 import drone from "@/assets/drone.jpg";
 import promoBanner from "@/assets/products/promo-banner.jpg";
 import { MedicineCard } from "@/components/MedicineCard";
+import { CourierIcon, DroneIcon } from "@/components/Order";
 import { SearchBar } from "@/components/SearchBar";
 import { Shell, soon } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CATEGORIES, MEDICINES } from "@/lib/data";
 import { seo } from "@/lib/seo";
+import { useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/home")({
   head: () =>
@@ -22,8 +24,31 @@ export const Route = createFileRoute("/home")({
 
 function HomePage() {
   const [help, setHelp] = useState(false);
+  const { orders } = useStore();
+  // Newest order that is not delivered yet (statuses follow the clock, see src/lib/tracking.ts).
+  const current = orders.find((o) => o.status !== "Delivered");
   return (
     <Shell>
+      {current && (
+        <Link
+          to="/track/$orderId"
+          params={{ orderId: current.id }}
+          className="flex min-h-16 items-center gap-3 rounded-2xl border-2 border-primary bg-primary-soft px-4 py-3 text-lg"
+        >
+          {current.method === "drone" ? (
+            <DroneIcon className="h-11 w-11 shrink-0" />
+          ) : (
+            <CourierIcon className="h-11 w-11 shrink-0" />
+          )}
+          <span className="min-w-0 flex-1 leading-tight">
+            <span className="block text-xl font-bold text-primary">Track order</span>
+            <span className="block text-base text-foreground">
+              {current.id} · {current.status === "Packaged" ? "being packaged" : "on the way"}
+            </span>
+          </span>
+          <ChevronRight className="h-7 w-7 shrink-0 text-primary" aria-hidden />
+        </Link>
+      )}
       <section className="py-6 text-center md:py-10">
         <h1 className="text-3xl font-bold md:text-5xl">What medicine do you need?</h1>
         <p className="mt-2 text-lg text-muted-foreground">Type a name or how you feel</p>
