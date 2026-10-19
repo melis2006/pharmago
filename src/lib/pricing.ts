@@ -76,3 +76,47 @@ export function orderTotals(
   const delivery = items.length > 0 ? DELIVERY[method].price : 0;
   return { subtotal, delivery, total: subtotal + delivery };
 }
+
+// Price of a pack size: offers are priced for the first pack; smaller packs use the multiplier.
+export const packPrice = (offerPrice: number, multiplier: number) =>
+  Math.round((offerPrice * multiplier) / 100) * 100;
+
+export type ComparisonRow = OptionRow & {
+  price: number; // for the selected pack
+  diff: number; // price minus the price of the pharmacy currently shown (negative = cheaper)
+  isCurrent: boolean;
+  isLowest: boolean;
+  isBestMatch: boolean;
+};
+
+// Medicine page, "Same medicine in other pharmacies": every in-stock pharmacy (plus the one
+// currently shown), cheapest first, compared with the pharmacy currently shown.
+export function pharmacyComparison(
+  offers: Offer[],
+  medicineId: string,
+  currentPharmacyId: string,
+  multiplier = 1,
+) {
+  const best = bestOffer(offers, medicineId);
+  const list = offersFor(offers, medicineId).filter(
+    (o) => o.qty > 0 || o.pharmacyId === currentPharmacyId,
+  );
+  const priced = list.map((o) => ({
+    o,
+    p: getPharmacy(o.pharmacyId),
+    price: packPrice(o.price, multiplier),
+  }));
+  priced.sort((a, b) => a.price - b.price || a.p.distanceKm - b.p.distanceKm);
+  const current = priced.find((r) => r.o.pharmacyId === currentPharmacyId) ?? priced[0];
+  const currentPrice = current?.price ?? 0;
+  const min = priced[0]?.price ?? 0;
+  const max = priced.at(-1)?.price ?? 0;
+  const rows: ComparisonRow[] = priced.map((r, i) => ({
+    ...r,
+    diff: r.price - currentPrice,
+    isCurrent: r === current,
+    isLowest: i === 0,
+    isBestMatch: r.o.pharmacyId === best?.pharmacyId,
+  }));
+  return { rows, min, max, maxSaving: Math.max(0, currentPrice - min) };
+}

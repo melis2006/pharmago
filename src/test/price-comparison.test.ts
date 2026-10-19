@@ -28,10 +28,10 @@ describe("US1: compare the same medicine across pharmacies", () => {
     }
   });
 
-  it("US1-AC2: cheapest offer is first for Fanigan (Horoshiy Pharm, 35,000 sum)", () => {
+  it("US1-AC2: cheapest offer is first for Fanigan (Sog'lom Plus, 31,500 sum)", () => {
     const [first] = compareOptions(OFFERS, "fanigan", "Cheapest");
-    expect(first?.p.name).toBe("Horoshiy Pharm");
-    expect(first?.o.price).toBe(35000);
+    expect(first?.p.name).toBe("Sog'lom Plus");
+    expect(first?.o.price).toBe(31500);
   });
 
   it("US1-AC3: the best match pharmacy for Fanigan is Horoshiy Pharm", () => {

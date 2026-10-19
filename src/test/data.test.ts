@@ -1,10 +1,38 @@
 import { describe, expect, it } from "vitest";
 
 import { formatSum, getMedicine, MEDICINES, OFFERS, offersFor, PHARMACIES } from "@/lib/data";
+import { bestOffer } from "@/lib/pricing";
 
 describe("demo data", () => {
   it("gives every medicine at least one offer", () => {
     for (const m of MEDICINES) expect(offersFor(OFFERS, m.id).length, m.id).toBeGreaterThan(0);
+  });
+
+  it("sells every medicine in at least 4 pharmacies (in stock) with at least 3 different prices", () => {
+    for (const m of MEDICINES) {
+      const inStock = offersFor(OFFERS, m.id).filter((o) => o.qty > 0);
+      expect(inStock.length, m.id).toBeGreaterThanOrEqual(4);
+      expect(new Set(inStock.map((o) => o.price)).size, m.id).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it("has cheaper and more expensive pharmacies than the best match (about 5–25% apart)", () => {
+    for (const m of MEDICINES) {
+      const best = bestOffer(OFFERS, m.id)!;
+      const diffs = offersFor(OFFERS, m.id).map((o) => (o.price - best.price) / best.price);
+      expect(
+        diffs.some((d) => d < 0),
+        `${m.id}: something cheaper`,
+      ).toBe(true);
+      expect(
+        diffs.some((d) => d > 0),
+        `${m.id}: something more expensive`,
+      ).toBe(true);
+      for (const d of diffs.filter((x) => x !== 0)) {
+        expect(Math.abs(d), m.id).toBeGreaterThanOrEqual(0.05);
+        expect(Math.abs(d), m.id).toBeLessThanOrEqual(0.25);
+      }
+    }
   });
 
   it("only has offers for known medicines and pharmacies, at most one per pair", () => {

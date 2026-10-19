@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { HealthWarning } from "@/components/HealthWarning";
 import { SaveButton } from "@/components/MedicineCard";
 import { MedicineImage } from "@/components/MedicineImage";
+import { PharmacyCompare } from "@/components/PharmacyCompare";
 import { ContactButton, PharmacyLogo, StarRow } from "@/components/Pharmacy";
 import { Shell, Stars } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
@@ -124,7 +125,8 @@ function MedicinePage() {
           </Button>
 
           <section
-            className="card-soft mt-6 border-2 border-primary p-5"
+            id="pharmacy-card"
+            className="card-soft mt-6 scroll-mt-48 border-2 border-primary p-5"
             aria-label={chosen ? "Selected pharmacy" : "Best match pharmacy"}
           >
             <p className="text-lg font-bold text-primary">
@@ -174,7 +176,7 @@ function MedicinePage() {
               className="mt-4 h-auto min-h-14 w-full whitespace-normal py-3 text-center"
             >
               <Link to="/compare/$id" params={{ id: m.id }}>
-                Browse other options ({offers.length} pharmacies)
+                See all pharmacies on the map
               </Link>
             </Button>
             <Button
@@ -201,7 +203,26 @@ function MedicinePage() {
           </section>
         </div>
 
-        <section>
+        {/* Phones: right after the pharmacy card. Desktop: full width below both columns. */}
+        <div className="md:col-span-2 md:row-start-3">
+          <PharmacyCompare
+            m={m}
+            pack={pack}
+            currentPharmacyId={ph.id}
+            onChoose={(pharmacyId, isBestMatch) => {
+              nav({
+                to: "/medicine/$id",
+                params: { id: m.id },
+                // The best match needs no ?pharmacy=, the card shows it by default.
+                search: isBestMatch ? {} : { pharmacy: pharmacyId },
+                resetScroll: false,
+              });
+              document.getElementById("pharmacy-card")?.scrollIntoView({ block: "start" });
+            }}
+          />
+        </div>
+
+        <section className="md:col-start-1 md:row-start-2">
           <h2 className="mb-3 text-2xl font-bold">About this medicine</h2>
           <dl className="card-soft divide-y">
             {info.map(([k, v]) => (

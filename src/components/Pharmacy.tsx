@@ -6,7 +6,7 @@ import type { Pharmacy } from "@/lib/data";
 // Demo logo: the pharmacy's initials on its brand colour.
 export function PharmacyLogo({ p, size = "h-14 w-14 text-xl" }: { p: Pharmacy; size?: string }) {
   const initials = p.name
-    .split(/[\s']+/)
+    .split(/\s+/) // whole words only: "Sog'lom Plus" → "SP"
     .filter((w) => /^[A-Za-z]/.test(w))
     .slice(0, 2)
     .map((w) => w[0])
